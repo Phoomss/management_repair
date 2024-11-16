@@ -11,7 +11,7 @@ const Register = () => {
         username: "",
         password: "",
         confirmPassword: "",
-        tel: ""
+        phone: ""
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ const Register = () => {
             return;
         }
 
-        if (!validatePhone(registerData.tel)) {
+        if (!validatePhone(registerData.phone)) {
             Swal.fire({
                 position: "center",
                 icon: "error",
@@ -189,11 +189,11 @@ const Register = () => {
                             </div>
                             <div className="input-group mb-3">
                                 <input
-                                    type="tel"
+                                    type="phone"
                                     className="form-control"
                                     placeholder="Phone number"
-                                    name="tel"
-                                    value={registerData.tel}
+                                    name="phone"
+                                    value={registerData.phone}
                                     onChange={handleChange}
                                     required
                                 />

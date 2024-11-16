@@ -6,6 +6,15 @@ import AdminLayout from './layouts/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import UserLayout from './layouts/UserLayout';
 import UserDashboardPage from './pages/user/UserDashboardPage';
+import AdminDetailPage from './pages/admin/AdminDetailPage';
+import AdminStepTespPage from './pages/admin/AdminStepTespPage';
+import AdminUserPage from './pages/admin/AdminUserPage';
+import AdminProfilePage from './pages/admin/AdminProfilePage';
+import UserDetailPage from './pages/user/UserDetailPage';
+import UserStepTestPage from './pages/user/UserStepTestPage';
+import UserProfilePage from './pages/user/UserProfilePage';
+import AdminCreateUserPage from './pages/admin/Form/AdminCreateUserPage';
+import AdminEditUserPage from './pages/admin/Form/AdminEditUserPage';
 
 const App = () => {
   return (
@@ -15,9 +24,18 @@ const App = () => {
         <Route path='/register' element={<Register />} />
         <Route element={<AdminLayout />} >
           <Route path='/admin/dashboard' element={<AdminDashboardPage />} />
+          <Route path='/admin/detail' element={<AdminDetailPage />} />
+          <Route path='/admin/step-test' element={<AdminStepTespPage />} />
+          <Route path='/admin/user/create' element={<AdminCreateUserPage />} />
+          <Route path='/admin/user' element={<AdminUserPage />} />
+          <Route path='/admin/user/edit/:userId' element={<AdminEditUserPage />} />
+          <Route path='/admin/profile' element={<AdminProfilePage />} />
         </Route>
         <Route element={<UserLayout />}>
-          <Route path='/user/dashboard' element={<UserDashboardPage/>}/>
+          <Route path='/user/dashboard' element={<UserDashboardPage />} />
+          <Route path='/user/detail' element={<UserDetailPage />} />
+          <Route path='/user/step-test' element={<UserStepTestPage />} />
+          <Route path='/user/profile' element={<UserProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

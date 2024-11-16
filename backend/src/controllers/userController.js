@@ -18,7 +18,7 @@ const getUserInfo = async (req, res) => {
 // Get all users
 const getAllUsers = async (req, res) => {
     try {
-        const users = await userModel.find({ role: 'sale' }).select('-admin');
+        const users = await userModel.find({ role: 'user' }).select('-admin');
         res.status(200).json({ data: users });
     } catch (error) {
         console.error(error);
