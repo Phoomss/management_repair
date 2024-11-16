@@ -63,37 +63,7 @@ const SideNav = () => {
                                 </NavLink>
                             </li>
                             <li className="nav-header">จัดการระบบ</li>
-                            <li className="nav-item">
-                                <NavLink to='/admin/products' className="nav-link">
-                                    <i className="nav-icon fab fa-product-hunt" />
-                                    <p>สินค้า</p>
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to='/admin/categories' className="nav-link">
-                                    <i className="nav-icon fas fa-columns" />
-                                    <p>ประเภทสินค้า</p>
-                                </NavLink>
-                            </li>
-                            <li className="nav-header">จัดการใบเสนอราคา</li>
-                            <li className="nav-item">
-                                <NavLink to='/admin/order/pass' className="nav-link">
-                                    <i className="nav-icon fas fa-clipboard-check" />
-                                    <p>ตรวจสอบแล้ว</p>
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to='/admin/order/process' className="nav-link">
-                                    <i className="nav-icon fas fa-spinner" />
-                                    <p>ยังไม่ได้ตรวจสอบ</p>
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to='/admin/order/fail' className="nav-link">
-                                    <i className="nav-icon fas fa-file-excel" />
-                                    <p>ใบเสนอราคาที่ผิดพลาด</p>
-                                </NavLink>
-                            </li>
+
 
                             <li className="nav-header">จัดการข้อมูล</li>
                             <li className="nav-item">
