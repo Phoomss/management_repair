@@ -69,7 +69,7 @@ const getUserById = async (req, res) => {
 // update profile
 const updateProfile = async (req, res) => {
     try {
-        const { title, firstName, lastName, email, password, tel } = req.body;
+        const { title, firstName, lastName, username, password, tel } = req.body;
         const user = await userModel.findById(req.user._id);
 
         // ตรวจสอบว่า user มีอยู่จริงหรือไม่
@@ -83,10 +83,10 @@ const updateProfile = async (req, res) => {
         // }
 
         // ตรวจสอบว่าอีเมลหรือเบอร์โทรนี้ถูกใช้งานแล้วหรือไม่ (ยกเว้นถ้าอีเมลหรือเบอร์เดิม)
-        const existingEmail = await userModel.findOne({ email });
+        const existingUsername = await userModel.findOne({ username });
         const existingTel = await userModel.findOne({ tel });
 
-        if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
+        if (existingUsername && existingUsername._id.toString() !== user._id.toString()) {
             return res.status(400).json({ msg: "อีเมลนี้ถูกใช้งานแล้ว" });
         }
 
@@ -107,7 +107,7 @@ const updateProfile = async (req, res) => {
                 title: title || user.title,
                 firstName: firstName || user.firstName,
                 lastName: lastName || user.lastName,
-                email: email || user.email,
+                username: username || user.username,
                 password: hashedPassword,
                 tel: tel || user.tel,
             },

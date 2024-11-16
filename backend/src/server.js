@@ -14,7 +14,7 @@ autoCreateAdmin()
 // middelwares
 app.use(cors());
 app.use(express.json());
-app.use(rootRouter)
+app.use('/api',rootRouter)
 
 // Start the server
 

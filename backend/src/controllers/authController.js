@@ -6,21 +6,14 @@ const register = async (req, res) => {
     try {
         const { title, firstName, lastName, username, password, phone } = req.body;
 
-        // ตรวจสอบเบอร์โทรให้ครบ 10 ตำแหน่ง
-        if (typeof phone !== 'string' || phone.length !== 10) {
-            return res.status(400).json({ msg: "กรุณากรอกเบอร์โทรให้ครบ 10 ตำแหน่ง" });
-        }
-
         // ตรวจสอบว่าอีเมล์หรือเบอร์โทรนี้ถูกใช้งานแล้วหรือไม่
-        const existingUsername = await userModel.findOne({ username });
-        const existingPhone = await userModel.findOne({ phone });
-
-        if (existingUsername) {
-            return res.status(400).json({ msg: "อีเมลนี้ถูกใช้งานแล้ว" });
-        }
-
-        if (existingPhone) {
-            return res.status(400).json({ msg: "เบอร์โทรนี้ถูกใช้งานแล้ว" });
+        const existingUser = await userModel.findOne({ $or: [{ username }, { phone }] });
+        
+        if (existingUser) {
+            const errorMessage = existingUser.username === username
+                ? "อีเมลนี้ถูกใช้งานแล้ว"
+                : "เบอร์โทรนี้ถูกใช้งานแล้ว";
+            return res.status(400).json({ msg: errorMessage });
         }
 
         // แฮชรหัสผ่าน
@@ -49,6 +42,7 @@ const register = async (req, res) => {
         });
     }
 };
+
 
 const login = async (req, res) => {
     try {
@@ -101,16 +95,16 @@ const login = async (req, res) => {
 const autoCreateAdmin = async () => {
     try {
         const existingAdmin = await userModel.findOne({ role: "admin" });
-        
+
         if (!existingAdmin) {
-            const hashedPassword = await hashPassword(process.env.ADMIN_PASSWORD || "defaultAdminPassword");
+            const hashedPassword = await hashPassword("1234");
             const admin = new userModel({
                 title: null,
                 firstName: "System",
                 lastName: "Administrator",
-                username: process.env.ADMIN_USERNAME || "admin",
+                username: "admin",
                 password: hashedPassword,
-                phone: process.env.ADMIN_PHONE || "0000000000",
+                phone: "0000000000",
                 role: "admin"
             });
 
