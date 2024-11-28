@@ -1,5 +1,5 @@
 const { hashPassword } = require('../helpers/hashPassword');
-const userModel = require('../models/userModle');
+const userModel = require('../models/userModel');
 
 // Get user info by token
 const getUserInfo = async (req, res) => {
