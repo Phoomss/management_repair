@@ -110,9 +110,11 @@ const Login = () => {
                                     {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
                                 </button>
                             </div>
-                            <p className="mb-0">
-                                <NavLink to="/register" className="text-center">โปรดสมัครก่อนเข้าสู่ระบบ</NavLink>
-                            </p>
+                            <div className="text-center mt-3">
+                                <NavLink to="/register" className="text-decoration-none">
+                                    ยังไม่มีบัญชี? สมัครสมาชิก
+                                </NavLink>
+                            </div>
                         </form>
                     </div>
                 </div>

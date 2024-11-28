@@ -63,7 +63,7 @@ const SideNav = () => {
                     <nav className="mt-2">
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <li className="nav-item">
-                                <NavLink to='/user /dashboard' className="nav-link">
+                                <NavLink to='/user/dashboard' className="nav-link">
                                     <i className="nav-icon fas fa-tachometer-alt" />
                                     <p>แดชบอร์ด</p>
                                 </NavLink>
