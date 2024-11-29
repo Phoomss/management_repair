@@ -81,6 +81,12 @@ const SideNav = () => {
                                     <p>Step Test</p>
                                 </NavLink>
                             </li>
+                            <li className="nav-item">
+                                <NavLink to='/admin/pipe' className="nav-link" style={styles.navLink}>
+                                    <i className="nav-icon fab fa fa-table" style={styles.navIcon} />
+                                    <p>ประเภทท่อ</p>
+                                </NavLink>
+                            </li>
                             <li className="nav-header" style={styles.navHeader}>จัดการข้อมูล</li>
                             <li className="nav-item">
                                 <NavLink to='/admin/user' className="nav-link" style={styles.navLink}>

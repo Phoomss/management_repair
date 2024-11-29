@@ -15,6 +15,7 @@ import UserStepTestPage from './pages/user/UserStepTestPage';
 import UserProfilePage from './pages/user/UserProfilePage';
 import AdminCreateUserPage from './pages/admin/Form/AdminCreateUserPage';
 import AdminEditUserPage from './pages/admin/Form/AdminEditUserPage';
+import AdminPipePage from './pages/admin/AdminPipePage';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route path='/admin/dashboard' element={<AdminDashboardPage />} />
           <Route path='/admin/detail' element={<AdminDetailPage />} />
           <Route path='/admin/step-test' element={<AdminStepTespPage />} />
+          <Route path='/admin/pipe' element={<AdminPipePage />} />
           <Route path='/admin/user/create' element={<AdminCreateUserPage />} />
           <Route path='/admin/user' element={<AdminUserPage />} />
           <Route path='/admin/user/edit/:userId' element={<AdminEditUserPage />} />

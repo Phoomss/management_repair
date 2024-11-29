@@ -8,6 +8,6 @@ pipeRouter.post('/', pipeController.createPipe)
 
 pipeRouter.put('/:id', pipeController.updatePipe)
 
-pipeRouter.delete('/:', pipeController.deletePipe)
+pipeRouter.delete('/:id', pipeController.deletePipe)
 
 module.exports = pipeRouter
