@@ -40,7 +40,7 @@ const caseSchema = new mongoose.Schema({
     },
     pipe: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'PipeCategories', 
+        ref: 'Pipe', 
         required: true,
     },
     size: {
