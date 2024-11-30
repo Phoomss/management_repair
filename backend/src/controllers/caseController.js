@@ -1,5 +1,5 @@
 const caseModel = require("../models/caseModel");
-const upload = require('../config/multerConfig'); 
+const upload = require('../config/multerConfig');
 
 const createCase = async (req, res) => {
     try {
@@ -43,6 +43,34 @@ const createCase = async (req, res) => {
     }
 };
 
+const listCase = async (req, res) => {
+    try {
+        const query = await caseModel.find()
+        res.status(200).json({data:query})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const getCaseById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const caseData = await caseModel.findById(id);
+
+        if (!caseData) {
+            return res.status(404).json({ message: "Case not found" });
+        }
+
+        res.status(200).json({ data: caseData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
-    createCase
+    createCase,
+    listCase,
+    getCaseById
 };
