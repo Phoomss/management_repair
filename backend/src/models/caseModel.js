@@ -11,7 +11,7 @@ const caseSchema = new mongoose.Schema({
         required: true,
     },
     houseNumber: {
-        type: String,
+        type: Number,
         required: true,
     },
     villageNo: {
@@ -39,8 +39,8 @@ const caseSchema = new mongoose.Schema({
         required: true,
     },
     pipe: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Pipe', 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pipe',
         required: true,
     },
     size: {
@@ -52,10 +52,10 @@ const caseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    image: {
-        type: [String],
-        default: [],
-    },
+    images: [{
+        data: Buffer,
+        contentType: String
+    }]
 });
 
 module.exports = mongoose.model('Case', caseSchema);
