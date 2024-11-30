@@ -70,7 +70,7 @@ const SideNav = () => {
                             </li>
                             <li className="nav-header" style={styles.navHeader}>จัดการระบบ</li>
                             <li className="nav-item">
-                                <NavLink to='/admin/detail' className="nav-link" style={styles.navLink}>
+                                <NavLink to='/admin/case' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon fa fa-table" style={styles.navIcon} />
                                     <p>รายละเอียดจุดท่อรั่ว</p>
                                 </NavLink>

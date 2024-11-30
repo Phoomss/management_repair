@@ -39,9 +39,10 @@ const caseSchema = new mongoose.Schema({
         required: true,
     },
     pipe: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Pipe',
-        required: true,
+        type: String,
+        // type: mongoose.Schema.Types.ObjectId,
+        // ref: 'Pipe',
+        // required: true,
     },
     size: {
         type: Number,
@@ -52,10 +53,7 @@ const caseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    images: [{
-        data: Buffer,
-        contentType: String
-    }]
+    images: [String]
 });
 
 module.exports = mongoose.model('Case', caseSchema);

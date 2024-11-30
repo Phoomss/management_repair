@@ -1,40 +1,35 @@
 const caseModel = require("../models/caseModel");
-const fs = require('fs')
+const upload = require('../config/multerConfig'); 
 
 const createCase = async (req, res) => {
     try {
-        if (!req.fields) {
-            return res.status(400).json({ message: "Fields are missing in the request" });
+        // ตรวจสอบว่าไฟล์มีหรือไม่
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ msg: "กรุณาอัปโหลดรูปภาพ" });
         }
 
+        // ดึง URL ของไฟล์ที่อัปโหลด
+        const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+
+        // ดึงข้อมูลที่ต้องการจาก req.body
         const {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
             latitude, longitude, pipe, size, dma
-        } = req.fields;
-
-        const { images } = req.files;
+        } = req.body;
 
         // ตรวจสอบขนาดไฟล์
-        if (images) {
-            const files = Array.isArray(images) ? images : [images]; // รองรับทั้งไฟล์เดี่ยวและหลายไฟล์
-            for (const file of files) {
-                if (file.size > 1000000) {
-                    return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 1 mb" });
-                }
+        req.files.forEach(file => {
+            if (file.size > 5000000) { // ขนาดไฟล์ไม่เกิน 5 MB
+                return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
             }
-        }
+        });
 
         // สร้างเอกสารใหม่
-        const newCase = new caseModel({ ...req.fields });
-
-        // เพิ่มรูปภาพลงในเอกสาร
-        if (images) {
-            const files = Array.isArray(images) ? images : [images];
-            newCase.images = files.map(file => ({
-                data: fs.readFileSync(file.path),
-                contentType: file.type
-            }));
-        }
+        const newCase = new caseModel({
+            date, numberWork, houseNumber, villageNo, subdistrict, district, province,
+            latitude, longitude, pipe, size, dma,
+            images: imageUrls // เก็บ URL รูปภาพในฐานข้อมูล
+        });
 
         await newCase.save();
 
@@ -48,6 +43,6 @@ const createCase = async (req, res) => {
     }
 };
 
-module.exports = ({
+module.exports = {
     createCase
-})
+};

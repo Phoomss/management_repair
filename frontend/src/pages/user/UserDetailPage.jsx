@@ -1,5 +1,5 @@
 import React from 'react'
-import Detail from '../../components/Detail'
+import Case from './../../components/Case';
 
 const UserDetailPage = () => {
     return (
@@ -19,7 +19,7 @@ const UserDetailPage = () => {
                     </div>{/* /.row */}
                 </div>{/* /.container-fluid */}
             </div>
-            <Detail />
+            <Case />
         </div>
     )
 }
