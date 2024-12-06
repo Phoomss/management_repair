@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useNavigate } from "react-router-dom";
 import caseService from './../../service/caseService';
 import pipeService from './../../service/pipeService';
@@ -24,8 +24,28 @@ const CreateCase = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [pipes, setPipes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mapCenter, setMapCenter] = useState({ lat: 13.7367, lng: 100.5232 }); // Default to Bangkok
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setMapCenter({ lat: latitude, lng: longitude });
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Unable to fetch your current location. Defaulting to Bangkok.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+    );
+  }, []);
+
 
   useEffect(() => {
     const fetchPipes = async () => {
@@ -111,7 +131,6 @@ const CreateCase = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="form-create-case container">
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="needs-validation" noValidate>
@@ -209,7 +228,7 @@ const CreateCase = () => {
           </div>
 
           {/* Row 3: Pipe and Size */}
-          <div className="col-md-6">
+          <div className="col-md-4">
             <label htmlFor="pipe" className="form-label">ท่อ</label>
             <select
               className="form-control"
@@ -227,7 +246,7 @@ const CreateCase = () => {
               ))}
             </select>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
             <label htmlFor="size" className="form-label">ขนาด</label>
             <input
               type="text"
@@ -239,36 +258,45 @@ const CreateCase = () => {
               required
             />
           </div>
+          <div className="col-md-4">
+            <label htmlFor="size" className="form-label">DMA</label>
+            <input
+              type="text"
+              className="form-control"
+              id="dma"
+              name="dma"
+              value={formData.dma}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
           <div className="col-md-12 mt-3 mb-3">
-          <LoadScript googleMapsApiKey="AIzaSyAsmDXCfNp6EVrsaRMj2okavlxRrty_oLE">
-            <GoogleMap
-              id="map"
-              mapContainerStyle={{ width: "100%", height: "400px" }}
-              center={{ lat: 13.7367, lng: 100.5232 }}
-              zoom={12}
-              onClick={(e) => {
-                setFormData({
-                  ...formData,
-                  latitude: e.latLng.lat().toFixed(6),
-                  longitude: e.latLng.lng().toFixed(6),
-                });
-              }}
-            >
-              {formData.latitude && formData.longitude && (
-                <Marker
-                  position={{
-                    lat: parseFloat(formData.latitude),
-                    lng: parseFloat(formData.longitude),
-                  }}
-                  icon={{
-                    url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-                  }}
-                />
-              )}
-            </GoogleMap>
-          </LoadScript>
-        </div>
+            <LoadScript googleMapsApiKey="AIzaSyAsmDXCfNp6EVrsaRMj2okavlxRrty_oLE">
+              <GoogleMap
+                id="map"
+                mapContainerStyle={{ width: "100%", height: "400px" }}
+                center={mapCenter}
+                zoom={12}
+                onClick={(e) => {
+                  setFormData({
+                    ...formData,
+                    latitude: e.latLng.lat().toFixed(6),
+                    longitude: e.latLng.lng().toFixed(6),
+                  });
+                }}
+              >
+                {formData.latitude && formData.longitude && (
+                  <Marker
+                    position={{
+                      lat: parseFloat(formData.latitude),
+                      lng: parseFloat(formData.longitude),
+                    }}
+                  />
+                )}
+              </GoogleMap>
+            </LoadScript>
+          </div>
 
           {/* Row 4: Latitude and Longitude */}
           <div className="col-md-6">
