@@ -261,6 +261,9 @@ const CreateCase = () => {
                     lat: parseFloat(formData.latitude),
                     lng: parseFloat(formData.longitude),
                   }}
+                  icon={{
+                    url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                  }}
                 />
               )}
             </GoogleMap>
