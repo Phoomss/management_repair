@@ -46,13 +46,13 @@ const User = () => {
             Swal.fire({
                 icon: 'success',
                 title: 'Deleted!',
-                text: 'Sale deleted successfully.',
+                text: 'user deleted successfully.',
                 timer: 1000,
                 timerProgressBar: true,
                 showConfirmButton: false,
             });
         } catch (error) {
-            setError('An error occurred while deleting the sale.');
+            setError('An error occurred while deleting the user.');
         }
     };
 
@@ -67,12 +67,12 @@ const User = () => {
 
         // Apply search filter
         if (searchTerm.trim() !== '') {
-            filtered = filtered.filter(sale =>
-                sale.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                sale.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                sale.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                sale.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                sale.tel.includes(searchTerm)
+            filtered = filtered.filter(user =>
+                user.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.tel.includes(searchTerm)
             );
         }
 
@@ -133,16 +133,16 @@ const User = () => {
                     </thead>
                     <tbody>
                         {currentUser.length > 0 ? (
-                            currentUser.map((sale, index) => (
-                                <tr key={sale._id}>
+                            currentUser.map((user, index) => (
+                                <tr key={user._id}>
                                     <td>{indexOfFirstItem + index + 1}</td>
-                                    <td>{sale.title} {sale.firstName} {sale.lastName}</td>
-                                    <td>{sale.username}</td>
-                                    <td>{sale.phone}</td>
-                                    <td><p className='bg-success border'>{sale.role}</p></td>
+                                    <td>{user.title} {user.firstName} {user.lastName}</td>
+                                    <td>{user.username}</td>
+                                    <td>{user.phone}</td>
+                                    <td><p className='bg-success border'>{user.role}</p></td>
                                     <td>
-                                        <button className='btn btn-warning mr-1 mt-1' onClick={() => handleEdit(sale._id)}>แก้ไข</button>
-                                        <button className='btn btn-danger mt-1' onClick={() => handleDelete(sale._id)}>ลบ</button>
+                                        <button className='btn btn-warning mr-1 mt-1' onClick={() => handleEdit(user._id)}>แก้ไข</button>
+                                        <button className='btn btn-danger mt-1' onClick={() => handleDelete(user._id)}>ลบ</button>
                                     </td>
                                 </tr>
                             ))

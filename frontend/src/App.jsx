@@ -39,7 +39,7 @@ const App = () => {
           <Route path='/admin/pipe' element={<AdminPipePage />} />
           <Route path='/admin/user/create' element={<AdminCreateUserPage />} />
           <Route path='/admin/user' element={<AdminUserPage />} />
-          <Route path='/admin/user/edit/:userId' element={<AdminEditUserPage />} />
+          <Route path='/admin/user/edit/:id' element={<AdminEditUserPage />} />
           <Route path='/admin/profile' element={<AdminProfilePage />} />
         </Route>
         <Route element={<UserLayout />}>
