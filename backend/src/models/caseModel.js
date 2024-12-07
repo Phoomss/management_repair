@@ -11,7 +11,7 @@ const caseSchema = new mongoose.Schema({
         required: true,
     },
     houseNumber: {
-        type: Number,
+        type: String,
         required: true,
     },
     villageNo: {

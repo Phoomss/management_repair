@@ -3,7 +3,6 @@ import Analysis from '../card/Analysis';
 import CaseDay from '../chart/CaseDay';
 import CaseWeek from '../chart/CaseWeek';
 import CaseMonth from '../chart/CaseMonth';
-import UserNotify from '../chart/UserNotify';
 
 const Dashboard = () => {
   return (
@@ -37,12 +36,6 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <UserNotify />
-            </div>
-          </div>
-
         </div>
       </section>{/* /.content */}
     </div>
