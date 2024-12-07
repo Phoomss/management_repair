@@ -16,7 +16,7 @@ const listCase = async () => {
 
 // Get a case by its ID
 const caseById = async (id) => {
-    return await http.get(`/api/case/${id}`);
+    return await http.get(`/api/case/${id}`)
 };
 
 // Update a case (with file upload support if necessary)

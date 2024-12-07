@@ -39,10 +39,9 @@ const caseSchema = new mongoose.Schema({
         required: true,
     },
     pipe: {
-        type: String,
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: 'Pipe',
-        // required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pipe',
+        required: true,
     },
     size: {
         type: Number,

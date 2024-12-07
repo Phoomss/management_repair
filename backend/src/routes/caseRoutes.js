@@ -6,5 +6,6 @@ const upload = require('../config/multerConfig');  // นำเข้า upload 
 caseRouter.post('/', upload.array('images', 5), caseController.createCase);
 
 caseRouter.get('/',caseController.listCase)
+caseRouter.get('/:id',caseController.getCaseById)
 
 module.exports = caseRouter;

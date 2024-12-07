@@ -56,7 +56,7 @@ const listCase = async (req, res) => {
 const getCaseById = async (req, res) => {
     try {
         const { id } = req.params;
-        const caseData = await caseModel.findById(id);
+        const caseData = await caseModel.findById(id).populate('pipe')
 
         if (!caseData) {
             return res.status(404).json({ message: "Case not found" });

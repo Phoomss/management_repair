@@ -17,6 +17,7 @@ import AdminCreateUserPage from './pages/admin/Form/AdminCreateUserPage';
 import AdminEditUserPage from './pages/admin/Form/AdminEditUserPage';
 import AdminPipePage from './pages/admin/AdminPipePage';
 import AdminCreateCasePage from './pages/admin/Form/AdminCreateCasePage';
+import AdminCaseDetail from './pages/admin/AdminCaseDetail';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         <Route element={<AdminLayout />} >
           <Route path='/admin/dashboard' element={<AdminDashboardPage />} />
           <Route path='/admin/case' element={<AdminDetailPage />} />
+          <Route path='/admin/case/detail/:id' element={<AdminCaseDetail />} />
           <Route path='/admin/case/create' element={<AdminCreateCasePage />} />
           <Route path='/admin/step-test' element={<AdminStepTespPage />} />
           <Route path='/admin/pipe' element={<AdminPipePage />} />
