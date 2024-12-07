@@ -7,6 +7,8 @@ const Case = () => {
   const [cases, setCases] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Track the current page
   const [totalPages, setTotalPages] = useState(1); // Track total pages
+  const [searchDate, setSearchDate] = useState(""); // State to track search by date
+  const [searchDma, setSearchDma] = useState(""); // State to track search by DMA
   const itemsPerPage = 10; // Define the number of items per page
   const navigate = useNavigate();
 
@@ -78,10 +80,23 @@ const Case = () => {
     setCurrentPage(page);
   };
 
+  // Filter cases based on search criteria (date and dma)
+  const filteredCases = cases.filter((caseItem) => {
+    const matchesDate = searchDate
+      ? new Date(caseItem.date).toLocaleDateString("en-CA") === searchDate
+      : true;
+  
+    const matchesDma = searchDma
+      ? caseItem.dma && caseItem.dma.toLowerCase().includes(searchDma.toLowerCase())
+      : true;
+  
+    return matchesDate && matchesDma;
+  })  
+
   // Get cases to display for the current page
   const indexOfLastCase = currentPage * itemsPerPage;
   const indexOfFirstCase = indexOfLastCase - itemsPerPage;
-  const currentCases = cases.slice(indexOfFirstCase, indexOfLastCase);
+  const currentCases = filteredCases.slice(indexOfFirstCase, indexOfLastCase);
 
   return (
     <div className="">
@@ -90,6 +105,25 @@ const Case = () => {
           เพิ่มจุดท่อรั่ว
         </button>
       </div>
+
+      {/* Search filters */}
+      <div className="d-flex mb-3">
+        <input
+          type="date"
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+          className="form-control me-2"
+          placeholder="ค้นหาด้วยวันที่"
+        />
+        <input
+          type="text"
+          value={searchDma}
+          onChange={(e) => setSearchDma(e.target.value)}
+          className="form-control"
+          placeholder="ค้นหาด้วย DMA"
+        />
+      </div>
+
       <div className="table-responsive">
         <table className="table table-bordered table-striped text-center">
           <thead className="table-primary">
