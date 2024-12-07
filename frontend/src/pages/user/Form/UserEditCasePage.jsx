@@ -1,7 +1,7 @@
 import React from 'react'
-import Case from '../../components/user/Case'
+import UpdateCase from './../../../components/Form/UpdateCase';
 
-const UserDetailPage = () => {
+const UserEditCasePage = () => {
     return (
         <div className='p-2'>
             <div className="content-header">
@@ -13,15 +13,16 @@ const UserDetailPage = () => {
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
                                 <li className="breadcrumb-item"><a href="#">user</a></li>
-                                <li className="breadcrumb-item active">detail</li>
+                                <li className="breadcrumb-item active">case</li>
+                                <li className="breadcrumb-item active">edit</li>
                             </ol>
                         </div>{/* /.col */}
                     </div>{/* /.row */}
                 </div>{/* /.container-fluid */}
             </div>
-            <Case />
+            <UpdateCase/>
         </div>
     )
 }
 
-export default UserDetailPage
+export default UserEditCasePage

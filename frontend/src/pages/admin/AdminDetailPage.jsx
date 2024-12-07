@@ -1,5 +1,5 @@
 import React from 'react'
-import Case from '../../components/Case'
+import Case from '../../components/admin/Case'
 
 const AdminDetailPage = () => {
     return (

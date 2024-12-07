@@ -70,24 +70,18 @@ const SideNav = () => {
                             </li>
                             <li className="nav-header" style={styles.navHeader}>จัดการระบบ</li>
                             <li className="nav-item">
-                                <NavLink to='/user/products' className="nav-link" style={styles.navLink}>
+                                <NavLink to='/user/case' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon fa fa-table" style={styles.navIcon} />
                                     <p>รายละเอียดจุดท่อรั่ว</p>
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to='/user/products' className="nav-link" style={styles.navLink}>
+                                <NavLink to='/user/step-test' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon fab fa fa-table" style={styles.navIcon} />
                                     <p>Step Test</p>
                                 </NavLink>
                             </li>
                             <li className="nav-header" style={styles.navHeader}>จัดการข้อมูล</li>
-                            <li className="nav-item">
-                                <NavLink to='/admin/user' className="nav-link" style={styles.navLink}>
-                                    <i className="nav-icon 	fas fa-user-friends" style={styles.navIcon} />
-                                    <p>ข้อมูลผู้ใช้งาน</p>
-                                </NavLink>
-                            </li>
                             <li className="nav-item">
                                 <NavLink to='/user/profile' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon 	fas fa-user-circle" style={styles.navIcon} />

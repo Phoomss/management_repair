@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import caseService from "./../service/caseService";
+import caseService from "../../service/caseService";
 import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Case = () => {

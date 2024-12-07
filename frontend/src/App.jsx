@@ -19,6 +19,9 @@ import AdminPipePage from './pages/admin/AdminPipePage';
 import AdminCreateCasePage from './pages/admin/Form/AdminCreateCasePage';
 import AdminCaseDetail from './pages/admin/AdminCaseDetail';
 import AdminEditCasePage from './pages/admin/Form/AdminEditCasePage';
+import UserCreateCasePage from './pages/user/Form/UserCreateCasePage';
+import UserEditCasePage from './pages/user/Form/UserEditCasePage';
+import UserCaseDetailPage from './pages/user/UserCaseDetail';
 
 const App = () => {
   return (
@@ -41,7 +44,10 @@ const App = () => {
         </Route>
         <Route element={<UserLayout />}>
           <Route path='/user/dashboard' element={<UserDashboardPage />} />
-          <Route path='/user/detail' element={<UserDetailPage />} />
+          <Route path='/user/case' element={<UserDetailPage />} />
+          <Route path='/user/case/detail/:id' element={<UserCaseDetailPage />} />
+          <Route path='/user/case/create' element={<UserCreateCasePage />} />
+          <Route path='/user/case/edit/:id' element={<UserEditCasePage />} />
           <Route path='/user/step-test' element={<UserStepTestPage />} />
           <Route path='/user/profile' element={<UserProfilePage />} />
         </Route>
