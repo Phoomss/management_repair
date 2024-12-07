@@ -101,11 +101,10 @@ const updateCase = async (req, res) => {
             {
                 date, numberWork, houseNumber, villageNo, subdistrict, district, province,
                 latitude, longitude, pipe, size, dma,
-                images: imageUrls.length > 0 ? imageUrls : undefined, // Only update images if new ones are provided
-            },
-            { new: true } // Return the updated document
+                images: imageUrls.length > 0 ? imageUrls : undefined, 
+            }
         );
-
+        
         if (!updatedCase) {
             return res.status(404).json({ message: "Case not found" });
         }

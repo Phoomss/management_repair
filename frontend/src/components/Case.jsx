@@ -34,6 +34,10 @@ const Case = () => {
     navigate(`/admin/case/detail/${id}`);
   };
 
+  const handleEdit = (id) => {
+    navigate(`/admin/case/edit/${id}`);
+  };
+
   const handleDelete = async (id) => {
     try {
       const result = await Swal.fire({
@@ -85,13 +89,13 @@ const Case = () => {
     const matchesDate = searchDate
       ? new Date(caseItem.date).toLocaleDateString("en-CA") === searchDate
       : true;
-  
+
     const matchesDma = searchDma
       ? caseItem.dma && caseItem.dma.toLowerCase().includes(searchDma.toLowerCase())
       : true;
-  
+
     return matchesDate && matchesDma;
-  })  
+  })
 
   // Get cases to display for the current page
   const indexOfLastCase = currentPage * itemsPerPage;
@@ -172,7 +176,10 @@ const Case = () => {
                     >
                       รายละเอียด
                     </button>
-                    <button className="btn btn-warning btn-sm mx-1">
+                    <button
+                      className="btn btn-warning btn-sm mx-1"
+                      onClick={() => handleEdit(caseItem._id)}
+                    >
                       แก้ไข
                     </button>
                     <button
