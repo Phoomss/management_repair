@@ -90,7 +90,7 @@ const Pipe = () => {
       {error && <div className="alert alert-danger">{error}</div>}
       <div className="table-responsive">
         <table className="table table-bordered table-gray table-striped text-center">
-          <thead>
+          <thead className="table-primary">
             <tr>
               <th scope="col">#</th>
               <th scope="col">ประเภทท่อ</th>
