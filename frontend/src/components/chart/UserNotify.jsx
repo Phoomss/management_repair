@@ -60,7 +60,7 @@ const UserNotify = () => {
 
   return (
     <div>
-      <h3>Employee Sales Performance</h3>
+      <h3>จำการแจ้งของเจ้าหน้า</h3>
       <Bar data={data} options={options} />
     </div>
   );

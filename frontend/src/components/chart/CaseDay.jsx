@@ -41,7 +41,7 @@ const CaseDay = () => {
 
   return (
     <div>
-      <h3>Daily Sales</h3>
+      <h3>จำนวนการแจ้งประจำวัน</h3>
       <Bar data={data} options={options} />
     </div>
   );

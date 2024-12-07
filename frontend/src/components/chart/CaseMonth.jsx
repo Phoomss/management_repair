@@ -41,7 +41,7 @@ const CaseMonth = () => {
 
   return (
     <div>
-      <h3>Monthly Sales</h3>
+      <h3>จำนวนการแจ้งประจำเดือน</h3>
       <Bar data={data} options={options} />
     </div>
   );

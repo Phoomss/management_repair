@@ -1,16 +1,15 @@
 import React from 'react';
-import Analysis from '../card/Analysis';
 import CaseDay from '../chart/CaseDay';
 import CaseWeek from '../chart/CaseWeek';
 import CaseMonth from '../chart/CaseMonth';
-import UserNotify from '../chart/UserNotify';
+import AnalysisUser from '../card/AnalysisUser';
 
 const Dashboard = () => {
   return (
     <div className="dashboard">
       <section className="content">
         <div className="container-fluid">
-          <Analysis />
+          <AnalysisUser />
           {/* Charts */}
           <div className="row">
             <div className="col-md-4 mb-4">
@@ -37,12 +36,6 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <UserNotify />
-            </div>
-          </div>
-
         </div>
       </section>{/* /.content */}
     </div>

@@ -41,7 +41,7 @@ const CaseWeek = () => {
 
   return (
     <div>
-      <h3>Weekly Sales</h3>
+      <h3>จำนวนการแจ้งประจำสัปดาห์</h3>
       <Bar data={data} options={options} />
     </div>
   );
