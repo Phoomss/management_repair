@@ -26,7 +26,7 @@ const AnalysisUser = () => {
                             <p>จำนวนการแจ้งประจำสัปดาห์</p>
                         </div>
                         <div className="icon">
-                            <i className="ion ion-person-add" />
+                            <i className="ion ion-stats-bars" />
                         </div>
                         <a href="#" className="small-box-footer">More info <i className="fas fa-arrow-circle-right" /></a>
                     </div>
@@ -40,7 +40,7 @@ const AnalysisUser = () => {
                             <p>จำนวนการแจ้งประจำเดือน</p>
                         </div>
                         <div className="icon">
-                            <i className="ion ion-pie-graph" />
+                            <i className="ion ion-stats-bars" />
                         </div>
                         <a href="#" className="small-box-footer">More info <i className="fas fa-arrow-circle-right" /></a>
                     </div>
