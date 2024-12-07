@@ -1,5 +1,7 @@
 const caseModel = require("../models/caseModel");
 const upload = require('../config/multerConfig');
+const path = require('path');
+const fs = require('fs');
 
 const createCase = async (req, res) => {
     try {
@@ -132,7 +134,10 @@ const deleteCase = async (req, res) => {
         // Delete images from the uploads folder
         if (caseToDelete.images && caseToDelete.images.length > 0) {
             caseToDelete.images.forEach(imagePath => {
-                const filePath = path.join(__dirname, '..', imagePath.replace('/uploads/', '')); // Construct the file path
+                // Construct the full file path (use 'uploads' folder relative path)
+                const filePath = path.join(__dirname, '..', 'uploads', imagePath.replace('/uploads/', '')); 
+
+                // Check if the file exists and then delete
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath); // Delete the file from the filesystem
                 }

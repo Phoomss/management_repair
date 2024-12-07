@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import caseService from "./../service/caseService";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Case = () => {
   const [cases, setCases] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const [totalPages, setTotalPages] = useState(1); // Track total pages
+  const itemsPerPage = 10; // Define the number of items per page
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const response = await caseService.listCase();
+        const response = await caseService.listCase(); // Fetch the cases
         setCases(response.data.data);
+        setTotalPages(Math.ceil(response.data.data.length / itemsPerPage)); // Calculate total pages
       } catch (error) {
         console.error("Error fetching cases:", error);
       }
@@ -26,10 +31,61 @@ const Case = () => {
   const handleNextDetail = (id) => {
     navigate(`/admin/case/detail/${id}`);
   };
+
+  const handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ลบ",
+        cancelButtonText: "ยกเลิก",
+      });
+
+      if (result.isConfirmed) {
+        await caseService.deleteCase(id);
+        setCases(cases.filter((caseItem) => caseItem._id !== id));
+
+        Swal.fire({
+          title: "ลบข้อมูลเรียบร้อยแล้ว",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting case:", error);
+
+      Swal.fire({
+        title: "เกิดข้อผิดพลาดในการลบข้อมูล",
+        icon: "error",
+      });
+    }
+  };
+
+  // Pagination handler
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Get cases to display for the current page
+  const indexOfLastCase = currentPage * itemsPerPage;
+  const indexOfFirstCase = indexOfLastCase - itemsPerPage;
+  const currentCases = cases.slice(indexOfFirstCase, indexOfLastCase);
+
   return (
     <div className="">
       <div className="d-flex justify-content-between align-items-center mb-3">
-
         <button className="btn btn-primary" onClick={handleNextCreate}>
           เพิ่มจุดท่อรั่ว
         </button>
@@ -47,8 +103,8 @@ const Case = () => {
             </tr>
           </thead>
           <tbody>
-            {cases.length > 0 ? (
-              cases.map((caseItem, index) => (
+            {currentCases.length > 0 ? (
+              currentCases.map((caseItem, index) => (
                 <tr key={caseItem._id}>
                   <td>{index + 1}</td>
                   <td>{new Date(caseItem.date).toLocaleDateString("th-TH") || "-"}</td>
@@ -69,20 +125,26 @@ const Case = () => {
                             height: "80px",
                             objectFit: "cover",
                             borderRadius: "5px",
-                            marginLeft: '5px'
+                            marginLeft: "5px",
                           }}
                         />
                       ))}
                     </div>
                   </td>
                   <td>
-                    <button className="btn btn-info btn-sm mx-1" onClick={() => handleNextDetail(caseItem._id)}>
+                    <button
+                      className="btn btn-info btn-sm mx-1"
+                      onClick={() => handleNextDetail(caseItem._id)}
+                    >
                       รายละเอียด
                     </button>
                     <button className="btn btn-warning btn-sm mx-1">
                       แก้ไข
                     </button>
-                    <button className="btn btn-danger btn-sm mx-1">
+                    <button
+                      className="btn btn-danger btn-sm mx-1"
+                      onClick={() => handleDelete(caseItem._id)}
+                    >
                       ลบ
                     </button>
                   </td>
@@ -96,6 +158,37 @@ const Case = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      <nav aria-label="Page navigation example">
+        <ul className="pagination justify-content-end">
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+            <button className="page-link" onClick={handlePreviousPage}>
+              ก่อนหน้า
+            </button>
+          </li>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <li
+              key={index}
+              className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageClick(index + 1)}
+              >
+                {index + 1}
+              </button>
+            </li>
+          ))}
+          <li
+            className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
+          >
+            <button className="page-link" onClick={handleNextPage}>
+              ถัดไป
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 };
