@@ -13,9 +13,11 @@
     "@react-google-maps/api": "^2.20.3",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.7",
     "frontend": "file:",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.6",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
     "sweetalert2": "^11.14.5"

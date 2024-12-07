@@ -1,9 +1,52 @@
-import React from 'react'
+import React from 'react';
+import Analysis from '../card/Analysis';
+import CaseDay from '../chart/CaseDay';
+import CaseWeek from '../chart/CaseWeek';
+import CaseMonth from '../chart/CaseMonth';
+import UserNotify from '../chart/UserNotify';
 
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
-  )
-}
+    <div className="dashboard">
+      <section className="content">
+        <div className="container-fluid">
+          <Analysis />
+          {/* Charts */}
+          <div className="row">
+            <div className="col-md-4 mb-4">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <CaseDay />
+                </div>
+              </div>
+            </div>
 
-export default Dashboard
+            <div className="col-md-4 mb-4">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <CaseWeek />
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-4 mb-4">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <CaseMonth />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <UserNotify />
+            </div>
+          </div>
+
+        </div>
+      </section>{/* /.content */}
+    </div>
+  );
+};
+
+export default Dashboard;
