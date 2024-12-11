@@ -34,7 +34,7 @@ const stepTestSchema = new mongoose.Schema({
         type: [String],
         required: true,
     },
-    RoundNo:{
+    roundNo:{
         type: [Number],
         required: true,
     },
