@@ -1,5 +1,6 @@
 import React from 'react'
-import StepTest from '../../components/StepTest'
+import StepTest from './../../components/user/StepTest';
+
 
 const UserStepTestPage = () => {
     return (
@@ -19,7 +20,7 @@ const UserStepTestPage = () => {
                     </div>{/* /.row */}
                 </div>{/* /.container-fluid */}
             </div>
-            <StepTest />
+            <StepTest/>
         </div>
     )
 }

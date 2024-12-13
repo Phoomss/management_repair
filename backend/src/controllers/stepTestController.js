@@ -30,6 +30,10 @@ const createStepTest = async (req, res) => {
       }
     });
 
+    const stepTestArray = stepTest ? stepTest.map(String) : [];
+    const roundNoArray = roundNo ? roundNo.map(Number) : [];
+    const valueArray = value ? value.map(Number) : [];
+
     const newStepTest = new stepTestModel({
       date,
       dma,
@@ -38,9 +42,9 @@ const createStepTest = async (req, res) => {
       subdistrict,
       district,
       province,
-      stepTest,
-      roundNo,
-      value,
+      stepTest: stepTestArray,
+      roundNo: roundNoArray,
+      value: valueArray,
       images: imageUrl,
     });
 
@@ -55,6 +59,7 @@ const createStepTest = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 const listStepTest = async (req, res) => {
   try {

@@ -1,5 +1,5 @@
 import React from 'react'
-import StepTest from '../../components/StepTest'
+import StepTest from '../../components/admin/StepTest'
 
 const AdminStepTespPage = () => {
     return (

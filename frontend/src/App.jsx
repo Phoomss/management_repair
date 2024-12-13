@@ -22,6 +22,8 @@ import AdminEditCasePage from './pages/admin/Form/AdminEditCasePage';
 import UserCreateCasePage from './pages/user/Form/UserCreateCasePage';
 import UserEditCasePage from './pages/user/Form/UserEditCasePage';
 import UserCaseDetailPage from './pages/user/UserCaseDetail';
+import AdminCreateStepTestPage from './pages/admin/Form/AdminCreateStepTestPage';
+import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
 
 const App = () => {
   return (
@@ -36,6 +38,7 @@ const App = () => {
           <Route path='/admin/case/create' element={<AdminCreateCasePage />} />
           <Route path='/admin/case/edit/:id' element={<AdminEditCasePage />} />
           <Route path='/admin/step-test' element={<AdminStepTespPage />} />
+          <Route path='/admin/step-test/create' element={<AdminCreateStepTestPage />} />
           <Route path='/admin/pipe' element={<AdminPipePage />} />
           <Route path='/admin/user/create' element={<AdminCreateUserPage />} />
           <Route path='/admin/user' element={<AdminUserPage />} />
@@ -49,6 +52,7 @@ const App = () => {
           <Route path='/user/case/create' element={<UserCreateCasePage />} />
           <Route path='/user/case/edit/:id' element={<UserEditCasePage />} />
           <Route path='/user/step-test' element={<UserStepTestPage />} />
+          <Route path='/user/step-test/create' element={<UserCreateStepTestPage />} />
           <Route path='/user/profile' element={<UserProfilePage />} />
         </Route>
       </Routes>
