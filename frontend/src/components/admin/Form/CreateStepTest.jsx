@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import stepTesstService from "../../../service/stepTestService";
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import stepTesstService from '../../../service/stepTestService';
 
 const CreateStepTest = () => {
   const [formData, setFormData] = useState({
@@ -12,40 +12,42 @@ const CreateStepTest = () => {
     subdistrict: "",
     district: "",
     province: "",
+    rounds: [{ roundNo: 1, stepTest: "", value: "" }],
+    images: [],
   });
-  const [steps, setSteps] = useState([
-    { stepTest: "", roundNo: "", value: "" },
-  ]);
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const stepTestOptions = ["CV", "SCV"];
 
-  const handleChange = (e) => {
+  const handleInputChange = (e, index) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const updatedRounds = [...formData.rounds];
+    updatedRounds[index][name] = value;
+    setFormData({ ...formData, rounds: updatedRounds });
   };
 
-  const handleStepChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedSteps = [...steps];
-    updatedSteps[index][name] = value;
-    console.log(updatedSteps);  // ดูค่าที่อัปเดต
-    setSteps(updatedSteps);
-  };  
-
-  const addStep = () => {
-    setSteps([...steps, { stepTest: "", roundNo: "", value: "" }]);
+  const handleAddRound = () => {
+    const nextRoundNo = formData.rounds.length + 1; // คำนวณเลขรอบใหม่
+    setFormData({
+      ...formData,
+      rounds: [
+        ...formData.rounds,
+        { roundNo: nextRoundNo, stepTest: "", value: "" },
+      ],
+    });
   };
 
-  const removeStep = (index) => {
-    setSteps(steps.filter((_, i) => i !== index));
+  const handleRemoveRound = (index) => {
+    const updatedRounds = formData.rounds.filter((_, i) => i !== index);
+    setFormData({ ...formData, rounds: updatedRounds });
   };
 
   const handleFileChange = (e) => {
     const validTypes = ["image/jpeg", "image/png"];
-    const maxFileSize = 5 * 1024 * 1024;
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
     const files = Array.from(e.target.files);
 
     const validFiles = files.filter(
@@ -54,10 +56,10 @@ const CreateStepTest = () => {
 
     if (validFiles.length !== files.length) {
       Swal.fire({
-        title: "ไฟล์ไม่ถูกต้อง!",
-        text: "กรุณาแน่ใจว่าไฟล์ทั้งหมดเป็น JPEG/PNG และมีขนาดไม่เกิน 5MB.",
+        title: "Invalid Files!",
+        text: "Ensure all files are JPEG/PNG and less than 5MB.",
         icon: "error",
-        confirmButtonText: "ตกลง",
+        confirmButtonText: "OK",
       });
       return;
     }
@@ -77,62 +79,43 @@ const CreateStepTest = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Validate all steps
-    for (let i = 0; i < steps.length; i++) {
-      const step = steps[i];
-      if (!step.stepTest || !step.roundNo || !step.value) {
-        console.log(step.stepTest);
-        console.log(step.roundNo);
-        console.log(step.value);
-        Swal.fire({
-          title: "ข้อผิดพลาด",
-          text: `กรุณากรอกข้อมูลให้ครบถ้วนสำหรับขั้นตอนที่ ${i + 1}`,
-          icon: "error",
-          confirmButtonText: "ตกลง",
-        });
-        setLoading(false);
-        return;
-      }
-    }
+    const form = new FormData();
+    form.append("date", formData.date);
+    form.append("dma", formData.dma);
+    form.append("houseNumber", formData.houseNumber);
+    form.append("villageNo", formData.villageNo);
+    form.append("subdistrict", formData.subdistrict);
+    form.append("district", formData.district);
+    form.append("province", formData.province);
 
-    const formDataToSend = new FormData();
-    // Append basic fields
-    Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key]);
+    formData.rounds.forEach((round, index) => {
+      form.append(`roundNo[${index}]`, round.roundNo);
+      form.append(`stepTest[${index}]`, round.stepTest);
+      form.append(`value[${index}]`, round.value);
     });
-    console.log(formDataToSend);
 
-    // Append steps as a single array
-    steps.forEach((step, index) => {
-      formDataToSend.append(`steps[${index}][stepTest]`, step.stepTest);
-      formDataToSend.append(`steps[${index}][roundNo]`, step.roundNo);
-      formDataToSend.append(`steps[${index}][value]`, step.value);
-    });
-    console.log("Steps to send:", steps);
-
-    // Append images
-    images.forEach((file) => formDataToSend.append("images", file));
+    images.forEach((file) => form.append("images", file));
 
     try {
-      const res = await stepTesstService.createStepTest(formDataToSend);
-      Swal.fire({
-        title: "สำเร็จ!",
-        text: res.data.msg,
-        icon: "success",
-        confirmButtonText: "ตกลง",
-      }).then(() => navigate("/admin/step-test"));
-    } catch (error) {
-      Swal.fire({
-        title: "ข้อผิดพลาด!",
-        text: error.response?.data?.msg || "เกิดข้อผิดพลาดที่ไม่คาดคิด.",
-        icon: "error",
-        confirmButtonText: "ลองใหม่",
-      });
+      const res = await stepTesstService.createStepTest(form);
+      console.log(res)
+        Swal.fire({
+          title: "Success!",
+          text: res.data.msg,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => navigate("/admin/step-test"));
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.res?.data?.msg || "An unexpected error occurred.",
+          icon: "error",
+          confirmButtonText: "Retry",
+        });
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="container py-4">
       <form onSubmit={handleSubmit} encType="multipart/form-data" noValidate>
@@ -150,7 +133,7 @@ const CreateStepTest = () => {
                   id="date"
                   name="date"
                   value={formData.date}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   required
                 />
               </div>
@@ -163,7 +146,7 @@ const CreateStepTest = () => {
                   id="dma"
                   name="dma"
                   value={formData.dma}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, dma: e.target.value })}
                   required
                 >
                   <option value="">เลือก DMA</option>
@@ -185,7 +168,7 @@ const CreateStepTest = () => {
                   id="houseNumber"
                   name="houseNumber"
                   value={formData.houseNumber}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
                   required
                 />
               </div>
@@ -199,7 +182,7 @@ const CreateStepTest = () => {
                   id="villageNo"
                   name="villageNo"
                   value={formData.villageNo}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, villageNo: e.target.value })}
                   required
                 />
               </div>
@@ -213,7 +196,7 @@ const CreateStepTest = () => {
                   id="subdistrict"
                   name="subdistrict"
                   value={formData.subdistrict}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, subdistrict: e.target.value })}
                   required
                 />
               </div>
@@ -227,7 +210,7 @@ const CreateStepTest = () => {
                   id="district"
                   name="district"
                   value={formData.district}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                   required
                 />
               </div>
@@ -241,7 +224,7 @@ const CreateStepTest = () => {
                   id="province"
                   name="province"
                   value={formData.province}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                   required
                 />
               </div>
@@ -249,64 +232,67 @@ const CreateStepTest = () => {
           </div>
         </div>
 
+        {/* step test */}
         <div className="card mb-4">
-          <div className="card-header d-flex justify-content-between align-items-center">
-            <span>Step Test Details</span>
-          </div>
-          <div className="card-body">
+          <div className="card-header">
+            Step Test Details{" "}
             <button
               type="button"
-              className="btn btn-outline-primary btn-sm"
-              onClick={addStep}
+              onClick={handleAddRound}
+              className="btn btn-sm btn-primary ms-3"
             >
               Add Step
             </button>
-            {steps.map((step, index) => (
-              <div key={index} className="row g-3 mb-3 mt-2">
+          </div>
+          <div className="card-body">
+            {formData.rounds.map((step, index) => (
+              <div key={index} className="row g-3 align-items-center mb-3">
                 <div className="col-md-4">
+                  <label htmlFor={`stepTest-${index}`} className="form-label">Step Test</label>
                   <select
                     className="form-control"
-                    name="stepTest"
-                    value={step.stepTest}
-                    onChange={(e) => handleStepChange(index, e)}
                     id={`stepTest-${index}`}
+                    name="stepTest" // กำหนด name ตรงกับ key ใน formData
+                    value={step.stepTest}
+                    onChange={(e) => handleInputChange(e, index)}
                     required
                   >
-                    <option value="">เลือก Step Test</option>
-                    <option value="CV">CV</option>
-                    <option value="SCV">SCV</option>
+                    <option value="">Select</option>
+                    {stepTestOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
                   </select>
                 </div>
-
-                <div className="col-md-4">
+                <div className="col-md-3">
+                  <label htmlFor={`roundNo-${index}`} className="form-label">Round No.</label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
-                    name="roundNo"
-                    value={step.roundNo || index + 1} // ใช้ค่าเริ่มต้นถ้า roundNo เป็น null หรือ undefined
-                    onChange={(e) => handleStepChange(index, e)}
-                    placeholder={`ลำดับที่ ${index + 1}`}
-                    required
+                    id={`roundNo-${index}`}
+                    name="roundNo" // กำหนด name หากจำเป็น (ในที่นี้ไม่จำเป็นเพราะ readOnly)
+                    value={step.roundNo}
+                    readOnly
                   />
                 </div>
-
-                <div className="col-md-4">
+                <div className="col-md-3">
+                  <label htmlFor={`value-${index}`} className="form-label">Value</label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
-                    name="value"
+                    id={`value-${index}`}
+                    name="value" // กำหนด name ตรงกับ key ใน formData
                     value={step.value}
-                    onChange={(e) => handleStepChange(index, e)}
-                    placeholder="ค่าที่ได้"
+                    onChange={(e) => handleInputChange(e, index)}
                     required
                   />
                 </div>
-
-                <div className="text-end mt-3">
+                <div className="col-md-2 text-end">
                   <button
                     type="button"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => removeStep(index)}
+                    className="btn btn-danger"
+                    onClick={() => handleRemoveRound(index)}
                   >
                     Remove
                   </button>
@@ -314,39 +300,24 @@ const CreateStepTest = () => {
               </div>
             ))}
           </div>
+
         </div>
 
+        {/* uplodd images */}
         <div className="card mb-4">
           <div className="card-header">Upload Images</div>
           <div className="card-body">
-            <input
-              type="file"
-              className="form-control"
-              id="images"
-              name="images"
-              multiple
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            <div className="mt-3 d-flex flex-wrap">
-              {previewImages.map((src, index) => (
-                <div key={index} className="position-relative me-2 mb-2">
-                  <img
-                    src={src}
-                    alt="Preview"
-                    className="rounded"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
+            <input type="file" multiple accept="image/jpeg, image/png" onChange={handleFileChange} />
+            <div className="row mt-3">
+              {previewImages.map((url, index) => (
+                <div key={index} className="col-md-3 mb-3 text-center">
+                  <img src={url} alt="Preview" className="img-thumbnail" />
                   <button
                     type="button"
-                    className="btn btn-danger btn-sm position-absolute top-0 end-0"
+                    className="btn btn-sm btn-danger mt-2"
                     onClick={() => removePreviewImage(index)}
                   >
-                    ×
+                    Remove
                   </button>
                 </div>
               ))}
@@ -354,13 +325,12 @@ const CreateStepTest = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? "กำลังบันทึก..." : "บันทึก"}
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default CreateStepTest;
+export default CreateStepTest

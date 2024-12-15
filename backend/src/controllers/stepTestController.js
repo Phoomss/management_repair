@@ -24,15 +24,18 @@ const createStepTest = async (req, res) => {
 
     req.files.forEach((file) => {
       if (file.size > 5000000) {
-        return res
-          .status(400)
-          .json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
+        return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
       }
     });
 
-    const stepTestArray = stepTest ? stepTest.map(String) : [];
-    const roundNoArray = roundNo ? roundNo.map(Number) : [];
-    const valueArray = value ? value.map(Number) : [];
+    // สร้าง Array ของ rounds จากข้อมูลที่ได้รับ
+    const roundsArray = roundNo && stepTest && value
+      ? roundNo.map((round, index) => ({
+          roundNo: round,
+          stepTest: stepTest[index],
+          value: value[index],
+        }))
+      : [];
 
     const newStepTest = new stepTestModel({
       date,
@@ -42,12 +45,11 @@ const createStepTest = async (req, res) => {
       subdistrict,
       district,
       province,
-      stepTest: stepTestArray,
-      roundNo: roundNoArray,
-      value: valueArray,
+      rounds: roundsArray, // เก็บข้อมูลรอบ
       images: imageUrl,
     });
 
+    console.log(newStepTest)
     await newStepTest.save();
 
     res.status(201).json({
@@ -59,7 +61,6 @@ const createStepTest = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 const listStepTest = async (req, res) => {
   try {
@@ -100,10 +101,7 @@ const updateStepTest = async (req, res) => {
 
       req.files.forEach((file) => {
         if (file.size > 5000000) {
-          // Max file size of 5 MB
-          return res
-            .status(400)
-            .json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
+          return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
         }
       });
     }
@@ -121,6 +119,15 @@ const updateStepTest = async (req, res) => {
       value,
     } = req.body;
 
+    // สร้าง Array ของ rounds
+    const roundsArray = roundNo && stepTest && value
+      ? roundNo.map((round, index) => ({
+          roundNo: round,
+          stepTest: stepTest[index],
+          value: value[index],
+        }))
+      : [];
+
     const updatedStepTest = await stepTestModel.findByIdAndUpdate(id, {
       date,
       dma,
@@ -129,9 +136,7 @@ const updateStepTest = async (req, res) => {
       subdistrict,
       district,
       province,
-      stepTest,
-      roundNo,
-      value,
+      rounds: roundsArray, // อัปเดตข้อมูลรอบ
       images: imageUrls.length > 0 ? imageUrls : undefined,
     });
 
