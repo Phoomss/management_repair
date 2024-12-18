@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require('path');
 const stepTestModel = require("../models/stepTestModel");
 
 const createStepTest = async (req, res) => {
@@ -31,10 +32,10 @@ const createStepTest = async (req, res) => {
     // สร้าง Array ของ rounds จากข้อมูลที่ได้รับ
     const roundsArray = roundNo && stepTest && value
       ? roundNo.map((round, index) => ({
-          roundNo: round,
-          stepTest: stepTest[index],
-          value: value[index],
-        }))
+        roundNo: round,
+        stepTest: stepTest[index],
+        value: value[index],
+      }))
       : [];
 
     const newStepTest = new stepTestModel({
@@ -49,7 +50,7 @@ const createStepTest = async (req, res) => {
       images: imageUrl,
     });
 
-    console.log(newStepTest)
+    // console.log(newStepTest)
     await newStepTest.save();
 
     res.status(201).json({
@@ -95,15 +96,37 @@ const updateStepTest = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // ดึงข้อมูล step test ที่จะอัปเดตจากฐานข้อมูล
+    const stepTest = await stepTestModel.findById(id);
+    if (!stepTest) {
+      return res.status(404).json({ message: "Step test not found" });
+    }
+
+    // เก็บ URL ของรูปภาพใหม่ที่อัปโหลด
     let imageUrls = [];
     if (req.files && req.files.length > 0) {
-      imageUrls = req.files.map((file) => `/upload/${file.filename}`);
+      imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
 
+      // ตรวจสอบขนาดไฟล์
       req.files.forEach((file) => {
         if (file.size > 5000000) {
           return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
         }
       });
+
+      // ลบรูปภาพเก่าก่อนที่จะอัปเดต
+      if (stepTest.images && stepTest.images.length > 0) {
+        stepTest.images.forEach((oldImage) => {
+          // สร้างเส้นทางที่ถูกต้องในการลบไฟล์
+          const imagePath = path.join(__dirname, '..', 'uploads', oldImage.replace('/uploads/', ''));
+          console.log(`กำลังลบไฟล์: ${imagePath}`);
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              console.error(`ไม่สามารถลบไฟล์ ${oldImage} ได้`, err);
+            }
+          });
+        });
+      }
     }
 
     const {
@@ -114,20 +137,21 @@ const updateStepTest = async (req, res) => {
       subdistrict,
       district,
       province,
-      stepTest,
+      stepTest: stepTestArray,
       roundNo,
       value,
     } = req.body;
 
     // สร้าง Array ของ rounds
-    const roundsArray = roundNo && stepTest && value
+    const roundsArray = roundNo && stepTestArray && value
       ? roundNo.map((round, index) => ({
-          roundNo: round,
-          stepTest: stepTest[index],
-          value: value[index],
-        }))
+        roundNo: round,
+        stepTest: stepTestArray[index],
+        value: value[index],
+      }))
       : [];
 
+    // อัปเดตข้อมูล step test
     const updatedStepTest = await stepTestModel.findByIdAndUpdate(id, {
       date,
       dma,
@@ -139,10 +163,6 @@ const updateStepTest = async (req, res) => {
       rounds: roundsArray, // อัปเดตข้อมูลรอบ
       images: imageUrls.length > 0 ? imageUrls : undefined,
     });
-
-    if (!updatedStepTest) {
-      return res.status(404).json({ message: "step test not found" });
-    }
 
     res.status(200).json({
       msg: "Step test Updated Successfully",
@@ -166,12 +186,7 @@ const deleteStepTest = async (req, res) => {
 
     if (stepTestToDelete.images && stepTestToDelete.images.length > 0) {
       stepTestToDelete.images.forEach((imagePath) => {
-        const filePath = path.join(
-          __dirname,
-          "..",
-          "uploads",
-          imagePath.replace("/uploads/", "")
-        );
+        const filePath = path.join(__dirname, '..', 'uploads', imagePath.replace('/uploads/', ''));
 
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);

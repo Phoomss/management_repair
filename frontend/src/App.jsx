@@ -3,27 +3,30 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/auth/login'
 import Register from './pages/auth/Register'
 import AdminLayout from './layouts/AdminLayout';
+
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import UserLayout from './layouts/UserLayout';
-import UserDashboardPage from './pages/user/UserDashboardPage';
 import AdminDetailPage from './pages/admin/AdminDetailPage';
 import AdminStepTespPage from './pages/admin/AdminStepTespPage';
 import AdminUserPage from './pages/admin/AdminUserPage';
 import AdminProfilePage from './pages/admin/AdminProfilePage';
-import UserDetailPage from './pages/user/UserDetailPage';
-import UserStepTestPage from './pages/user/UserStepTestPage';
-import UserProfilePage from './pages/user/UserProfilePage';
 import AdminCreateUserPage from './pages/admin/Form/AdminCreateUserPage';
 import AdminEditUserPage from './pages/admin/Form/AdminEditUserPage';
 import AdminPipePage from './pages/admin/AdminPipePage';
 import AdminCreateCasePage from './pages/admin/Form/AdminCreateCasePage';
 import AdminCaseDetail from './pages/admin/AdminCaseDetail';
 import AdminEditCasePage from './pages/admin/Form/AdminEditCasePage';
+import AdminCreateStepTestPage from './pages/admin/Form/AdminCreateStepTestPage';
+import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
+import AdminEditStepTestPage from './pages/admin/Form/AdminEditStepTestPage';
+
 import UserCreateCasePage from './pages/user/Form/UserCreateCasePage';
 import UserEditCasePage from './pages/user/Form/UserEditCasePage';
 import UserCaseDetailPage from './pages/user/UserCaseDetail';
-import AdminCreateStepTestPage from './pages/admin/Form/AdminCreateStepTestPage';
-import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
+import UserDetailPage from './pages/user/UserDetailPage';
+import UserStepTestPage from './pages/user/UserStepTestPage';
+import UserProfilePage from './pages/user/UserProfilePage';
+import UserLayout from './layouts/UserLayout';
+import UserDashboardPage from './pages/user/UserDashboardPage';
 
 const App = () => {
   return (
@@ -39,6 +42,7 @@ const App = () => {
           <Route path='/admin/case/edit/:id' element={<AdminEditCasePage />} />
           <Route path='/admin/step-test' element={<AdminStepTespPage />} />
           <Route path='/admin/step-test/create' element={<AdminCreateStepTestPage />} />
+          <Route path='/admin/step-test/edit/:id' element={<AdminEditStepTestPage />} />
           <Route path='/admin/pipe' element={<AdminPipePage />} />
           <Route path='/admin/user/create' element={<AdminCreateUserPage />} />
           <Route path='/admin/user' element={<AdminUserPage />} />
