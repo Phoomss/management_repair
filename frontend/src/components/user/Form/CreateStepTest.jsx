@@ -129,7 +129,7 @@ const CreateStepTest = () => {
         text: res.data.msg,
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => navigate("/admin/step-test"));
+      }).then(() => navigate("/user/step-test"));
     } catch (error) {
       Swal.fire({
         title: "Error!",

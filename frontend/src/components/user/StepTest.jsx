@@ -52,7 +52,7 @@ const StepTest = () => {
   );
 
   // Event handlers
-  const handleCreate = () => navigate("/admin/step-test/create");
+  const handleCreate = () => navigate("/user/step-test/create");
   const handlePreviousPage = () =>
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () =>
@@ -66,7 +66,7 @@ const StepTest = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/step-test/edit/${id}`);
+    navigate(`/user/step-test/edit/${id}`);
   };
 
   

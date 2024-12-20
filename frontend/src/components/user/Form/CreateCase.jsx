@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";importad
 import Swal from "sweetalert2";
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useNavigate } from "react-router-dom";
@@ -142,7 +142,7 @@ const CreateCase = () => {
         text: response.data.msg,
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => navigate("/admin/case"));
+      }).then(() => navigate("/user/case"));
     } catch (err) {
       Swal.fire({
         title: "Error!",
