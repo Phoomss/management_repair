@@ -1,5 +1,5 @@
 import React from 'react'
-import UpdateCase from './../../../components/Form/UpdateCase';
+import UpdateCase from '../../../components/admin/Form/UpdateCase'
 
 const AdminEditCasePage = () => {
     return (

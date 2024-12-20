@@ -1,5 +1,6 @@
 import React from 'react'
-import CreateCase from '../../../components/Form/CreateCase'
+import CreateCase from '../../../components/admin/Form/CreateCase'
+
 
 const AdminCreateCasePage = () => {
     return (

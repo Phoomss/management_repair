@@ -52,7 +52,12 @@ const caseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    images: [String]
+    images: [String],
+    inspector: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
 });
 
 module.exports = mongoose.model('Case', caseSchema);

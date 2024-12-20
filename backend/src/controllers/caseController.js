@@ -16,7 +16,7 @@ const createCase = async (req, res) => {
         // ดึงข้อมูลที่ต้องการจาก req.body
         const {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
-            latitude, longitude, pipe, size, dma
+            latitude, longitude, pipe, size, dma, inspector
         } = req.body;
 
         // ตรวจสอบขนาดไฟล์
@@ -30,7 +30,8 @@ const createCase = async (req, res) => {
         const newCase = new caseModel({
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
             latitude, longitude, pipe, size, dma,
-            images: imageUrls // เก็บ URL รูปภาพในฐานข้อมูล
+            images: imageUrls, // เก็บ URL รูปภาพในฐานข้อมูล
+            inspector
         });
 
         await newCase.save();
@@ -47,7 +48,7 @@ const createCase = async (req, res) => {
 
 const listCase = async (req, res) => {
     try {
-        const query = await caseModel.find()
+        const query = await caseModel.find().populate('pipe').populate('inspector') // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
         res.status(200).json({data:query})
     } catch (error) {
         console.error(error);
@@ -58,7 +59,7 @@ const listCase = async (req, res) => {
 const getCaseById = async (req, res) => {
     try {
         const { id } = req.params;
-        const caseData = await caseModel.findById(id).populate('pipe')
+        const caseData = await caseModel.findById(id).populate('pipe').populate('inspector');
 
         if (!caseData) {
             return res.status(404).json({ message: "Case not found" });
@@ -92,7 +93,7 @@ const updateCase = async (req, res) => {
         // Extract other fields from the request body
         const {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
-            latitude, longitude, pipe, size, dma
+            latitude, longitude, pipe, size, dma,inspector
         } = req.body;
 
         // Update the case in the database
@@ -101,7 +102,7 @@ const updateCase = async (req, res) => {
             {
                 date, numberWork, houseNumber, villageNo, subdistrict, district, province,
                 latitude, longitude, pipe, size, dma,
-                images: imageUrls.length > 0 ? imageUrls : undefined, 
+                images: imageUrls.length > 0 ? imageUrls : undefined, inspector
             }
         );
         

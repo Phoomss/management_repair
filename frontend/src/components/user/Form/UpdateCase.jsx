@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useNavigate, useParams } from "react-router-dom";
-import caseService from "../../service/caseService";
-import pipeService from "../../service/pipeService";
+import pipeService from './../../../service/pipeService';
+import caseService from './../../../service/caseService';
 
 const UpdateCase = () => {
   const { id } = useParams(); // Get the case ID from the URL
@@ -20,6 +20,7 @@ const UpdateCase = () => {
     pipe: "",
     size: "",
     dma: "",
+    inspector: "", // Inspector ID
   });
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
@@ -37,7 +38,7 @@ const UpdateCase = () => {
         const caseData = res.data.data;
         setFormData({
           ...formData,
-          date: new Date(caseData.date).toISOString().split('T')[0], 
+          date: new Date(caseData.date).toISOString().split('T')[0],
           numberWork: caseData.numberWork,
           houseNumber: caseData.houseNumber,
           villageNo: caseData.villageNo,
@@ -49,7 +50,8 @@ const UpdateCase = () => {
           pipe: caseData.pipe,
           size: caseData.size,
           dma: caseData.dma,
-        });        
+          inspector: caseData.inspector,
+        });
 
         setMapCenter({ lat: parseFloat(caseData.latitude), lng: parseFloat(caseData.longitude) });
       } catch (err) {
@@ -83,7 +85,7 @@ const UpdateCase = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    
+
     if (name === "date") {
       // If it's a date, format it to yyyy-MM-dd before updating the state
       const formattedDate = new Date(value).toISOString().split('T')[0];
@@ -166,6 +168,22 @@ const UpdateCase = () => {
     <div className="form-create-case container">
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="needs-validation" noValidate>
         <div className="row g-4">
+          <div className="col-md-12">
+            <label htmlFor="dma" className="form-label">
+              ชื่อผู้ตรวจสอบ
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="inspector"
+              name="inspector"
+              value={`${formData.inspector.title || ""}${formData.inspector.firstName} ${formData.inspector.lastName}`}
+              onChange={(e) =>
+                setFormData({ ...formData, inspector: e.target.value })
+              }
+              required
+            />
+          </div>
           {/* Row 1: Date and Work Number */}
           <div className="col-md-6">
             <label htmlFor="date" className="form-label">
@@ -290,18 +308,27 @@ const UpdateCase = () => {
             />
           </div>
           <div className="col-md-4">
-            <label htmlFor="size" className="form-label">DMA</label>
-            <input
-              type="text"
+            <label htmlFor="dma" className="form-label">
+              DMA
+            </label>
+            <select
               className="form-control"
               id="dma"
               name="dma"
               value={formData.dma}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData({ ...formData, dma: e.target.value })
+              }
               required
-            />
+            >
+              <option value="">เลือก DMA</option>
+              {[...Array(10).keys()].map((i) => (
+                <option key={i} value={`0${i + 1}`}>
+                  {`0${i + 1}`}
+                </option>
+              ))}
+            </select>
           </div>
-
           <div className="col-md-12 mt-3 mb-3">
             <LoadScript googleMapsApiKey="AIzaSyAsmDXCfNp6EVrsaRMj2okavlxRrty_oLE">
               <GoogleMap

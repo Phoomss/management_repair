@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { useNavigate } from "react-router-dom";
-import caseService from './../../service/caseService';
-import pipeService from './../../service/pipeService';
+import { useNavigate, useParams } from "react-router-dom";
+import pipeService from './../../../service/pipeService';
+import caseService from './../../../service/caseService';
 
-const CreateCase = () => {
+const UpdateCase = () => {
+  const { id } = useParams(); // Get the case ID from the URL
   const [formData, setFormData] = useState({
     date: "",
     numberWork: "",
@@ -19,6 +20,7 @@ const CreateCase = () => {
     pipe: "",
     size: "",
     dma: "",
+    inspector: "", // Inspector ID
   });
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
@@ -29,23 +31,40 @@ const CreateCase = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setMapCenter({ lat: latitude, lng: longitude });
-      },
-      (error) => {
-        console.error("Error getting location:", error);
+    // Fetch existing case data by id
+    const fetchCaseData = async () => {
+      try {
+        const res = await caseService.caseById(id);
+        const caseData = res.data.data;
+        setFormData({
+          ...formData,
+          date: new Date(caseData.date).toISOString().split('T')[0],
+          numberWork: caseData.numberWork,
+          houseNumber: caseData.houseNumber,
+          villageNo: caseData.villageNo,
+          subdistrict: caseData.subdistrict,
+          district: caseData.district,
+          province: caseData.province,
+          latitude: caseData.latitude,
+          longitude: caseData.longitude,
+          pipe: caseData.pipe,
+          size: caseData.size,
+          dma: caseData.dma,
+          inspector: caseData.inspector,
+        });
+
+        setMapCenter({ lat: parseFloat(caseData.latitude), lng: parseFloat(caseData.longitude) });
+      } catch (err) {
         Swal.fire({
           title: "Error!",
-          text: "Unable to fetch your current location. Defaulting to Bangkok.",
-          icon: "warning",
-          confirmButtonText: "OK",
+          text: err.response?.data?.msg || "Failed to fetch case data.",
+          icon: "error",
+          confirmButtonText: "Retry",
         });
       }
-    );
-  }, []);
-
+    };
+    fetchCaseData();
+  }, [id]);
 
   useEffect(() => {
     const fetchPipes = async () => {
@@ -64,9 +83,22 @@ const CreateCase = () => {
     fetchPipes();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "date") {
+      // If it's a date, format it to yyyy-MM-dd before updating the state
+      const formattedDate = new Date(value).toISOString().split('T')[0];
+      setFormData({
+        ...formData,
+        [name]: formattedDate
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleFileChange = (e) => {
@@ -113,7 +145,7 @@ const CreateCase = () => {
     images.forEach((file) => formDataToSend.append("images", file));
 
     try {
-      const response = await caseService.createCase(formDataToSend);
+      const response = await caseService.updateCase(id, formDataToSend);
       Swal.fire({
         title: "Success!",
         text: response.data.msg,
@@ -131,10 +163,27 @@ const CreateCase = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="form-create-case container">
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="needs-validation" noValidate>
         <div className="row g-4">
+          <div className="col-md-12">
+            <label htmlFor="dma" className="form-label">
+              ชื่อผู้ตรวจสอบ
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="inspector"
+              name="inspector"
+              value={`${formData.inspector.title || ""}${formData.inspector.firstName} ${formData.inspector.lastName}`}
+              onChange={(e) =>
+                setFormData({ ...formData, inspector: e.target.value })
+              }
+              required
+            />
+          </div>
           {/* Row 1: Date and Work Number */}
           <div className="col-md-6">
             <label htmlFor="date" className="form-label">
@@ -259,18 +308,27 @@ const CreateCase = () => {
             />
           </div>
           <div className="col-md-4">
-            <label htmlFor="size" className="form-label">DMA</label>
-            <input
-              type="text"
+            <label htmlFor="dma" className="form-label">
+              DMA
+            </label>
+            <select
               className="form-control"
               id="dma"
               name="dma"
               value={formData.dma}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData({ ...formData, dma: e.target.value })
+              }
               required
-            />
+            >
+              <option value="">เลือก DMA</option>
+              {[...Array(10).keys()].map((i) => (
+                <option key={i} value={`0${i + 1}`}>
+                  {`0${i + 1}`}
+                </option>
+              ))}
+            </select>
           </div>
-
           <div className="col-md-12 mt-3 mb-3">
             <LoadScript googleMapsApiKey="AIzaSyAsmDXCfNp6EVrsaRMj2okavlxRrty_oLE">
               <GoogleMap
@@ -298,10 +356,10 @@ const CreateCase = () => {
             </LoadScript>
           </div>
 
-          {/* Row 4: Latitude and Longitude */}
+          {/* Latitude and Longitude */}
           <div className="col-md-6">
             <label htmlFor="latitude" className="form-label">
-              ละติจูด <i className="bi bi-geo"></i>
+              ละติจูด <i className="bi bi-geo-alt"></i>
             </label>
             <input
               type="text"
@@ -310,7 +368,7 @@ const CreateCase = () => {
               name="latitude"
               value={formData.latitude}
               onChange={handleChange}
-              required
+              disabled
             />
           </div>
           <div className="col-md-6">
@@ -324,50 +382,39 @@ const CreateCase = () => {
               name="longitude"
               value={formData.longitude}
               onChange={handleChange}
-              required
+              disabled
             />
           </div>
 
-          {/* File Upload */}
-          <div className="col-12">
-            <label htmlFor="images" className="form-label">Upload Images</label>
+          {/* Image Upload */}
+          <div className="col-md-12">
+            <label className="form-label">อัปโหลดภาพ</label>
             <input
               type="file"
-              className="form-control"
-              id="images"
-              name="images"
               multiple
+              className="form-control"
               accept="image/*"
               onChange={handleFileChange}
             />
-            <div className="mt-3 d-flex flex-wrap gap-2">
-              {previewImages.map((src, index) => (
-                <img
-                  key={index}
-                  src={src}
-                  alt="Preview"
-                  className="img-thumbnail"
-                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                />
-              ))}
-            </div>
+            {previewImages.length > 0 && (
+              <div className="mt-2">
+                {previewImages.map((img, idx) => (
+                  <img key={idx} src={img} alt={`Preview ${idx}`} width="100" className="me-2" />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}
-          <div className="col-12">
-            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-              {loading ? (
-                <span className="spinner-border spinner-border-sm" role="status" />
-              ) : (
-                "บันทึก"
-              )}
+          <div className="col-md-12 text-center mt-4">
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? "กำลังอัพเดท..." : "อัพเดทข้อมูล"}
             </button>
           </div>
         </div>
       </form>
     </div>
-
   );
 };
 
-export default CreateCase;
+export default UpdateCase;
