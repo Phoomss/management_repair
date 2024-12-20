@@ -16,7 +16,6 @@ import AdminCreateCasePage from './pages/admin/Form/AdminCreateCasePage';
 import AdminCaseDetail from './pages/admin/AdminCaseDetail';
 import AdminEditCasePage from './pages/admin/Form/AdminEditCasePage';
 import AdminCreateStepTestPage from './pages/admin/Form/AdminCreateStepTestPage';
-import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
 import AdminEditStepTestPage from './pages/admin/Form/AdminEditStepTestPage';
 
 import UserCreateCasePage from './pages/user/Form/UserCreateCasePage';
@@ -27,6 +26,8 @@ import UserStepTestPage from './pages/user/UserStepTestPage';
 import UserProfilePage from './pages/user/UserProfilePage';
 import UserLayout from './layouts/UserLayout';
 import UserDashboardPage from './pages/user/UserDashboardPage';
+import UserEditStepTest from './pages/user/Form/UserEditStepTest';
+import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
 
 const App = () => {
   return (
@@ -57,6 +58,7 @@ const App = () => {
           <Route path='/user/case/edit/:id' element={<UserEditCasePage />} />
           <Route path='/user/step-test' element={<UserStepTestPage />} />
           <Route path='/user/step-test/create' element={<UserCreateStepTestPage />} />
+          <Route path='/user/step-test/edit/:id' element={<UserEditStepTest />} />
           <Route path='/user/profile' element={<UserProfilePage />} />
         </Route>
       </Routes>
