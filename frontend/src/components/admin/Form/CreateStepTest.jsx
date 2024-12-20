@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import stepTesstService from '../../../service/stepTestService';
+import userService from './../../../service/userService';
 
 const CreateStepTest = () => {
   const [formData, setFormData] = useState({
@@ -14,13 +15,36 @@ const CreateStepTest = () => {
     province: "",
     rounds: [{ roundNo: 1, stepTest: "", value: "" }],
     images: [],
+    inspector: "",
   });
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   const navigate = useNavigate();
   const stepTestOptions = ["CV", "SCV"];
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const res = await userService.userInfo();
+        setUserInfo(res.data.data);
+        setFormData((prevData) => ({
+          ...prevData,
+          inspector: res.data.data._id,  // เก็บแค่ _id
+        }));
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.res?.data?.msg || "An unexpected error occurred.",
+          icon: "error",
+          confirmButtonText: "OK",
+        })
+      }
+    }
+    fetchUserInfo();
+  }, []);
 
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
@@ -87,6 +111,7 @@ const CreateStepTest = () => {
     form.append("subdistrict", formData.subdistrict);
     form.append("district", formData.district);
     form.append("province", formData.province);
+    form.append("inspector", formData.inspector);  // ส่งแค่ _id ที่เก็บไว้
 
     formData.rounds.forEach((round, index) => {
       form.append(`roundNo[${index}]`, round.roundNo);
@@ -98,19 +123,20 @@ const CreateStepTest = () => {
 
     try {
       const res = await stepTesstService.createStepTest(form);
-        Swal.fire({
-          title: "Success!",
-          text: res.data.msg,
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then(() => navigate("/admin/step-test"));
-      } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: error.res?.data?.msg || "An unexpected error occurred.",
-          icon: "error",
-          confirmButtonText: "Retry",
-        });
+      console.log(res)
+      Swal.fire({
+        title: "Success!",
+        text: res.data.msg,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => navigate("/admin/step-test"));
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.res?.data?.msg || "An unexpected error occurred.",
+        icon: "error",
+        confirmButtonText: "Retry",
+      });
     } finally {
       setLoading(false);
     }
@@ -122,6 +148,20 @@ const CreateStepTest = () => {
           <div className="card-header">ข้อมูลเบื้องต้น</div>
           <div className="card-body">
             <div className="row g-3">
+              <div className="col-md-12">
+                <label htmlFor="dma" className="form-label">
+                  ชื่อผู้ตรวจสอบ
+                </label>
+                <input type="hidden" name="inspector" value={formData.inspector} />
+                <input
+                  type="text"
+                  className="form-control"
+                  name="inspector"
+                  placeholder="inspector"
+                  value={`${userInfo.title} ${userInfo.firstName} ${userInfo.lastName}`}
+                  disabled
+                />
+              </div>
               <div className="col-md-6">
                 <label htmlFor="date" className="form-label">
                   วันที่

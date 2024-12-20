@@ -21,6 +21,7 @@ const createStepTest = async (req, res) => {
       stepTest,
       roundNo,
       value,
+      inspector
     } = req.body;
 
     req.files.forEach((file) => {
@@ -48,8 +49,8 @@ const createStepTest = async (req, res) => {
       province,
       rounds: roundsArray, // เก็บข้อมูลรอบ
       images: imageUrl,
+      inspector,
     });
-
     // console.log(newStepTest)
     await newStepTest.save();
 
@@ -65,7 +66,7 @@ const createStepTest = async (req, res) => {
 
 const listStepTest = async (req, res) => {
   try {
-    const query = await stepTestModel.find();
+    const query = await stepTestModel.find().populate('inspector');
 
     return res.status(200).json({
       data: query,
@@ -79,7 +80,7 @@ const listStepTest = async (req, res) => {
 const getStepTestById = async (req, res) => {
   try {
     const { id } = req.params;
-    const stepTestData = await stepTestModel.findById(id);
+    const stepTestData = await stepTestModel.findById(id).populate('inspector');
 
     if (!stepTestData) {
       return res.status(404).json({ message: "step test not found" });
@@ -140,6 +141,7 @@ const updateStepTest = async (req, res) => {
       stepTest: stepTestArray,
       roundNo,
       value,
+      inspector
     } = req.body;
 
     // สร้าง Array ของ rounds
@@ -162,6 +164,7 @@ const updateStepTest = async (req, res) => {
       province,
       rounds: roundsArray, // อัปเดตข้อมูลรอบ
       images: imageUrls.length > 0 ? imageUrls : undefined,
+      inspector,
     });
 
     res.status(200).json({

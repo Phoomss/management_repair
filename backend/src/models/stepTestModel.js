@@ -45,8 +45,13 @@ const stepTestSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  rounds: [roundSchema], // เก็บข้อมูลรอบเป็น Array ของ Object
-  images: [String], // รูปภาพ
+  rounds: [roundSchema],
+  images: [String],
+  inspector: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
 });
 
 module.exports = mongoose.model("StepTest", stepTestSchema);

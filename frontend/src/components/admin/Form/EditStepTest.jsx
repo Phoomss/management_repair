@@ -14,6 +14,7 @@ const EditStepTest = () => {
     province: "",
     rounds: [], // Step rounds
     images: [], // Uploaded files
+    inspector: "", // Inspector ID
   });
   const [previewImages, setPreviewImages] = useState([]);
   const { id } = useParams();
@@ -119,6 +120,7 @@ const EditStepTest = () => {
     form.append("subdistrict", formData.subdistrict);
     form.append("district", formData.district);
     form.append("province", formData.province);
+    form.append("inspector", formData.inspector._id);
 
     formData.rounds.forEach((round, index) => {
       form.append(`roundNo[${index}]`, round.roundNo);
@@ -154,6 +156,22 @@ const EditStepTest = () => {
           <div className="card-header">ข้อมูลเบื้องต้น</div>
           <div className="card-body">
             <div className="row g-3">
+              <div className="col-md-12">
+                <label htmlFor="dma" className="form-label">
+                  ชื่อผู้ตรวจสอบ
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="inspector"
+                  name="inspector"
+                  value={`${formData.inspector.title || ""}${formData.inspector.firstName} ${formData.inspector.lastName}`}
+                  onChange={(e) =>
+                    setFormData({ ...formData, inspector: e.target.value })
+                  }
+                  required
+                />
+              </div>
               <div className="col-md-6">
                 <label htmlFor="date" className="form-label">
                   วันที่

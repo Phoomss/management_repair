@@ -21,6 +21,7 @@ const StepTest = () => {
       try {
         const res = await stepTestService.listStepTest();
         setStepTests(res.data.data || []);
+        // console.log(res.data.data);
       } catch (error) {
         console.error("Error fetching step tests:", error);
       }
@@ -137,6 +138,7 @@ const StepTest = () => {
           <thead className="table-primary">
             <tr>
               <th>#</th>
+              <th>รายชื่อผู้ตรวจ</th>
               <th>วันที่</th>
               <th>DMA</th>
               <th>สถานที่</th>
@@ -148,6 +150,7 @@ const StepTest = () => {
               currentStepTests.map((item, index) => (
                 <tr key={item._id}>
                   <td>{indexOfFirstStepTest + index + 1}</td>
+                  <td>{item.inspector?.title || ""}{item.inspector?.firstName || ""} {item.inspector?.lastName || ""}</td>
                   <td>
                     {new Date(item.date).toLocaleDateString("th-TH") || "-"}
                   </td>
@@ -179,7 +182,7 @@ const StepTest = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5">ไม่มีข้อมูล</td>
+                <td colSpan="6">ไม่มีข้อมูล</td>
               </tr>
             )}
           </tbody>
@@ -230,6 +233,10 @@ const StepTest = () => {
           {selectedStepTest ? (
             <>
               {/* ข้อมูลพื้นฐาน */}
+              <p>
+                <strong>ผู้ตรวจสอบ:</strong>{" "}
+                {selectedStepTest.inspector?.title || ""}{selectedStepTest.inspector?.firstName || ""} {selectedStepTest.inspector?.lastName || ""}
+              </p>
               <p>
                 <strong>วันที่:</strong>{" "}
                 {new Date(selectedStepTest.date).toLocaleDateString("th-TH")}
