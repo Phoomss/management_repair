@@ -59,6 +59,12 @@ const StepTest = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePageClick = (page) => setCurrentPage(page);
 
+  const handleDowloadPDF = async (id) => {
+    const pdfUrl = `/step-test/pdf/${id}`
+
+    window.open(pdfUrl, '_blank');
+  }
+
   const handleNextDetail = (id) => {
     const stepTest = stepTests.find((item) => item._id === id);
     setSelectedStepTest(stepTest);
@@ -69,7 +75,6 @@ const StepTest = () => {
     navigate(`/admin/step-test/edit/${id}`);
   };
 
-  
   const handleDelete = async (id) => {
     try {
       const result = await Swal.fire({
@@ -160,19 +165,26 @@ const StepTest = () => {
                   </td>
                   <td>
                     <button
-                      className="btn btn-info btn-sm mx-1"
+                      className="btn btn-info btn-sm mx-1 mt-1"
                       onClick={() => handleNextDetail(item._id)}
                     >
                       รายละเอียด
                     </button>
                     <button
-                      className="btn btn-warning btn-sm mx-1"
+                      className="btn btn-info btn-sm mx-1 mt-1"
+                      onClick={() => handleDowloadPDF(item._id)}
+                      target="_blank"
+                    >
+                      Dowload PDF
+                    </button>
+                    <button
+                      className="btn btn-warning btn-sm mx-1 mt-1"
                       onClick={() => handleEdit(item._id)}
                     >
                       แก้ไข
                     </button>
                     <button
-                      className="btn btn-danger btn-sm mx-1"
+                      className="btn btn-danger btn-sm mx-1 mt-1"
                       onClick={() => handleDelete(item._id)}
                     >
                       ลบ

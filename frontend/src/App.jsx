@@ -28,6 +28,7 @@ import UserLayout from './layouts/UserLayout';
 import UserDashboardPage from './pages/user/UserDashboardPage';
 import UserEditStepTest from './pages/user/Form/UserEditStepTest';
 import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
+import GenPDF from './components/common/PDF/GenPDF';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/step-test/pdf/:id' element={<GenPDF />} />
         <Route element={<AdminLayout />} >
           <Route path='/admin/dashboard' element={<AdminDashboardPage />} />
           <Route path='/admin/case' element={<AdminDetailPage />} />
