@@ -76,19 +76,32 @@ const updateCase = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Check if any files were uploaded
-        let imageUrls = [];
-        if (req.files && req.files.length > 0) {
-            // If files are uploaded, map the files to their URLs
-            imageUrls = req.files.map(file => `/uploads/${file.filename}`);
-
-            // Optional: Check file sizes if needed
-            req.files.forEach(file => {
-                if (file.size > 5000000) { // Max file size of 5 MB
-                    return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
-                }
+       // เก็บ URL ของรูปภาพใหม่ที่อัปโหลด
+          let imageUrls = [];
+          if (req.files && req.files.length > 0) {
+            imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
+      
+            // ตรวจสอบขนาดไฟล์
+            req.files.forEach((file) => {
+              if (file.size > 5000000) {
+                return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
+              }
             });
-        }
+      
+            // ลบรูปภาพเก่าก่อนที่จะอัปเดต
+            if (stepTest.images && stepTest.images.length > 0) {
+              stepTest.images.forEach((oldImage) => {
+                // สร้างเส้นทางที่ถูกต้องในการลบไฟล์
+                const imagePath = path.join(__dirname, '..', 'uploads', oldImage.replace('/uploads/', ''));
+                console.log(`กำลังลบไฟล์: ${imagePath}`);
+                fs.unlink(imagePath, (err) => {
+                  if (err) {
+                    console.error(`ไม่สามารถลบไฟล์ ${oldImage} ได้`, err);
+                  }
+                });
+              });
+            }
+          }
 
         // Extract other fields from the request body
         const {

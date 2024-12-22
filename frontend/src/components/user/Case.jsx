@@ -27,15 +27,15 @@ const Case = () => {
   }, []);
 
   const handleNextCreate = () => {
-    navigate("/user/case/create");
+    navigate("/admin/case/create");
   };
 
   const handleNextDetail = (id) => {
-    navigate(`/user/case/detail/${id}`);
+    navigate(`/admin/case/detail/${id}`);
   };
 
   const handleEdit = (id) => {
-    navigate(`/user/case/edit/${id}`);
+    navigate(`/admin/case/edit/${id}`);
   };
 
   const handleDelete = async (id) => {

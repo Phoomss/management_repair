@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { useNavigate } from "react-router-dom";
-import pipeService from './../../../service/pipeService';
-import caseService from './../../../service/caseService';
+import pipeService from "./../../../service/pipeService";
+import caseService from "./../../../service/caseService";
 import userService from "../../../service/userService";
 
 const CreateCase = () => {
@@ -20,7 +20,8 @@ const CreateCase = () => {
     pipe: "",
     size: "",
     dma: "",
-    inspector: ''
+    inspector: "",
+    images: [],
   });
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
@@ -49,7 +50,6 @@ const CreateCase = () => {
     );
   }, []);
 
-
   useEffect(() => {
     const fetchPipes = async () => {
       try {
@@ -71,7 +71,7 @@ const CreateCase = () => {
         setUserInfo(res.data.data);
         setFormData((prevData) => ({
           ...prevData,
-          inspector: res.data.data._id,  // เก็บแค่ _id
+          inspector: res.data.data._id, // เก็บแค่ _id
         }));
       } catch (error) {
         Swal.fire({
@@ -79,9 +79,9 @@ const CreateCase = () => {
           text: error.res?.data?.msg || "An unexpected error occurred.",
           icon: "error",
           confirmButtonText: "OK",
-        })
+        });
       }
-    }
+    };
     fetchPipes();
     fetchUserInfo();
   }, []);
@@ -102,16 +102,23 @@ const CreateCase = () => {
 
     if (validFiles.length !== files.length) {
       Swal.fire({
-        title: "Invalid File!",
-        text: "Ensure all files are JPEG/PNG and below 5MB.",
-        icon: "error",
-        confirmButtonText: "OK",
+        title: "ไฟล์ไม่ถูกต้อง!", // ชื่อในกล่องแจ้งเตือน
+        text: "กรุณาเลือกไฟล์ที่เป็น JPEG/PNG และมีขนาดไม่เกิน 5MB.", // ข้อความแจ้งเตือน
+        icon: "error", // ไอคอนการแจ้งเตือน
+        confirmButtonText: "ตกลง", // ข้อความในปุ่มตกลง
       });
       return;
     }
 
     setImages(validFiles);
     setPreviewImages(validFiles.map((file) => URL.createObjectURL(file)));
+  };
+
+  const removePreviewImage = (index) => {
+    const updatedPreviews = previewImages.filter((_, i) => i !== index);
+    const updatedImages = images.filter((_, i) => i !== index);
+    setPreviewImages(updatedPreviews);
+    setImages(updatedImages);
   };
 
   const handleSubmit = async (e) => {
@@ -142,7 +149,7 @@ const CreateCase = () => {
         text: response.data.msg,
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => navigate("/user/case"));
+      }).then(() => navigate("/admin/case"));
     } catch (err) {
       Swal.fire({
         title: "Error!",
@@ -155,263 +162,300 @@ const CreateCase = () => {
     }
   };
   return (
-    <div className="form-create-case container">
-      <form onSubmit={handleSubmit} encType="multipart/form-data" className="needs-validation" noValidate>
-        <div className="row g-4">
-          <div className="col-md-12">
-            <label htmlFor="inspector" className="form-label">
-              ชื่อผู้ตรวจสอบ
-            </label>
-            <input type="hidden" name="inspector" value={formData.inspector._id} />
-            <input
-              type="text"
-              className="form-control"
-              name="inspector"
-              placeholder="ชื่อผู้ตรวจสอบ"
-              value={`${userInfo.title} ${userInfo.firstName} ${userInfo.lastName}`}
-              disabled
-            />
-          </div>
-          {/* Row 1: Date and Work Number */}
-          <div className="col-md-6">
-            <label htmlFor="date" className="form-label">
-              วันที่ <i className="bi bi-calendar"></i>
-            </label>
-            <input
-              type="date"
-              className="form-control"
-              id="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="numberWork" className="form-label">
-              เลขที่งาน <i className="bi bi-file-earmark"></i>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="numberWork"
-              name="numberWork"
-              value={formData.numberWork}
-              onChange={handleChange}
-              required
-            />
-          </div>
+    <div className="container py-4">
+      <form onSubmit={handleSubmit} encType="multipart/form-data" noValidate>
+        <div className="card mb-4">
+          <div className="card-header">ข้อมูลเบื้องต้น</div>
+          <div className="card-body">
+            <div className="row g-3">
+              {/* Inspector Information */}
+              <div className="col-md-12">
+                <label htmlFor="inspector" className="form-label">
+                  ชื่อผู้ตรวจสอบ
+                </label>
+                <input
+                  type="hidden"
+                  name="inspector"
+                  value={formData.inspector._id}
+                />
+                <input
+                  type="text"
+                  className="form-control"
+                  name="inspector"
+                  placeholder="ชื่อผู้ตรวจสอบ"
+                  value={`${userInfo.title || ""} ${userInfo.firstName} ${
+                    userInfo.lastName
+                  }`}
+                  disabled
+                />
+              </div>
 
-          {/* Row 2: Address Fields */}
-          <div className="col-md-6">
-            <label htmlFor="houseNumber" className="form-label">บ้านเลขที่</label>
-            <input
-              type="text"
-              className="form-control"
-              id="houseNumber"
-              name="houseNumber"
-              value={formData.houseNumber}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="villageNo" className="form-label">หมู่ที่</label>
-            <input
-              type="text"
-              className="form-control"
-              id="villageNo"
-              name="villageNo"
-              value={formData.villageNo}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <label htmlFor="subdistrict" className="form-label">ตำบล</label>
-            <input
-              type="text"
-              className="form-control"
-              id="subdistrict"
-              name="subdistrict"
-              value={formData.subdistrict}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <label htmlFor="district" className="form-label">อำเภอ</label>
-            <input
-              type="text"
-              className="form-control"
-              id="district"
-              name="district"
-              value={formData.district}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <label htmlFor="province" className="form-label">จังหวัด</label>
-            <input
-              type="text"
-              className="form-control"
-              id="province"
-              name="province"
-              value={formData.province}
-              onChange={handleChange}
-              required
-            />
-          </div>
+              {/* Row 1: Date and Work Number */}
+              <div className="col-md-6">
+                <label htmlFor="date" className="form-label">
+                  วันที่ <i className="bi bi-calendar"></i>
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-          {/* Row 3: Pipe and Size */}
-          <div className="col-md-4">
-            <label htmlFor="pipe" className="form-label">ท่อ</label>
-            <select
-              className="form-control"
-              id="pipe"
-              name="pipe"
-              value={formData.pipe}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>-- เลือกประเภทท่อ --</option>
-              {pipes?.map(pipe => (
-                <option key={pipe._id} value={pipe._id}>
-                  {pipe.pipe}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="col-md-4">
-            <label htmlFor="size" className="form-label">ขนาด</label>
-            <input
-              type="text"
-              className="form-control"
-              id="size"
-              name="size"
-              value={formData.size}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <label htmlFor="dma" className="form-label">
-              DMA
-            </label>
-            <select
-              className="form-control"
-              id="dma"
-              name="dma"
-              value={formData.dma}
-              onChange={(e) => setFormData({ ...formData, dma: e.target.value })}
-              required
-            >
-              <option value="">เลือก DMA</option>
-              {[...Array(10).keys()].map((i) => (
-                <option key={i} value={`0${i + 1}`}>
-                  {`0${i + 1}`}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="col-md-6">
+                <label htmlFor="numberWork" className="form-label">
+                  เลขที่งาน <i className="bi bi-file-earmark"></i>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="numberWork"
+                  name="numberWork"
+                  value={formData.numberWork}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-          <div className="col-md-12 mt-3 mb-3">
-            <LoadScript googleMapsApiKey="AIzaSyAsmDXCfNp6EVrsaRMj2okavlxRrty_oLE">
-              <GoogleMap
-                id="map"
-                mapContainerStyle={{ width: "100%", height: "400px" }}
-                center={mapCenter}
-                zoom={12}
-                onClick={(e) => {
-                  setFormData({
-                    ...formData,
-                    latitude: e.latLng.lat().toFixed(6),
-                    longitude: e.latLng.lng().toFixed(6),
-                  });
-                }}
-              >
-                {formData.latitude && formData.longitude && (
-                  <Marker
-                    position={{
-                      lat: parseFloat(formData.latitude),
-                      lng: parseFloat(formData.longitude),
+              {/* Row 2: Address Fields */}
+              <div className="col-md-6">
+                <label htmlFor="houseNumber" className="form-label">
+                  บ้านเลขที่
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="houseNumber"
+                  name="houseNumber"
+                  value={formData.houseNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label htmlFor="villageNo" className="form-label">
+                  หมู่ที่
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="villageNo"
+                  name="villageNo"
+                  value={formData.villageNo}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label htmlFor="subdistrict" className="form-label">
+                  ตำบล
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="subdistrict"
+                  name="subdistrict"
+                  value={formData.subdistrict}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label htmlFor="district" className="form-label">
+                  อำเภอ
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="district"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label htmlFor="province" className="form-label">
+                  จังหวัด
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="province"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-header">รายละเอียดจุดท่อรั่ว</div>
+          <div className="card-body">
+            <div className="row g-3">
+              {/* Row 3: Pipe and Size */}
+              <div className="col-md-4">
+                <label htmlFor="pipe" className="form-label">
+                  ท่อ
+                </label>
+                <select
+                  className="form-control"
+                  id="pipe"
+                  name="pipe"
+                  value={formData.pipe}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    -- เลือกประเภทท่อ --
+                  </option>
+                  {pipes?.map((pipe) => (
+                    <option key={pipe._id} value={pipe._id}>
+                      {pipe.pipe}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-4">
+                <label htmlFor="size" className="form-label">
+                  ขนาด
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="size"
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-4">
+                <label htmlFor="dma" className="form-label">
+                  DMA
+                </label>
+                <select
+                  className="form-control"
+                  id="dma"
+                  name="dma"
+                  value={formData.dma}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dma: e.target.value })
+                  }
+                  required
+                >
+                  <option value="">เลือก DMA</option>
+                  {[...Array(10).keys()].map((i) => (
+                    <option key={i} value={`0${i + 1}`}>
+                      {`0${i + 1}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Row 4: Latitude and Longitude */}
+              <div className="col-md-6">
+                <label htmlFor="latitude" className="form-label">
+                  ละติจูด <i className="bi bi-geo"></i>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="latitude"
+                  name="latitude"
+                  value={formData.latitude}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label htmlFor="longitude" className="form-label">
+                  ลองจิจูด <i className="bi bi-geo-alt"></i>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="longitude"
+                  name="longitude"
+                  value={formData.longitude}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-12 mt-3 mb-3">
+                <LoadScript googleMapsApiKey="AIzaSyAsmDXCfNp6EVrsaRMj2okavlxRrty_oLE">
+                  <GoogleMap
+                    id="map"
+                    mapContainerStyle={{ width: "100%", height: "400px" }}
+                    center={mapCenter}
+                    zoom={12}
+                    onClick={(e) => {
+                      setFormData({
+                        ...formData,
+                        latitude: e.latLng.lat().toFixed(6),
+                        longitude: e.latLng.lng().toFixed(6),
+                      });
                     }}
-                  />
-                )}
-              </GoogleMap>
-            </LoadScript>
+                  >
+                    {formData.latitude && formData.longitude && (
+                      <Marker
+                        position={{
+                          lat: parseFloat(formData.latitude),
+                          lng: parseFloat(formData.longitude),
+                        }}
+                      />
+                    )}
+                  </GoogleMap>
+                </LoadScript>
+              </div>
+            </div>
           </div>
+        </div>
 
-          {/* Row 4: Latitude and Longitude */}
-          <div className="col-md-6">
-            <label htmlFor="latitude" className="form-label">
-              ละติจูด <i className="bi bi-geo"></i>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="latitude"
-              name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="longitude" className="form-label">
-              ลองจิจูด <i className="bi bi-geo-alt"></i>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="longitude"
-              name="longitude"
-              value={formData.longitude}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* File Upload */}
-          <div className="col-12">
-            <label htmlFor="images" className="form-label">Upload Images</label>
+        {/* File Upload */}
+        <div className="card mb-12">
+          <div className="card-header">Upload Images</div>
+          <div className="card-body">
             <input
               type="file"
-              className="form-control"
-              id="images"
-              name="images"
               multiple
-              accept="image/*"
+              accept="image/jpeg, image/png"
               onChange={handleFileChange}
             />
-            <div className="mt-3 d-flex flex-wrap gap-2">
-              {previewImages.map((src, index) => (
-                <img
-                  key={index}
-                  src={src}
-                  alt="Preview"
-                  className="img-thumbnail"
-                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                />
+            <div className="row mt-3">
+              {previewImages.map((url, index) => (
+                <div key={index} className="col-md-3 mb-3 text-center">
+                  <img src={url} alt="Preview" className="img-thumbnail" />
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-danger mt-2"
+                    onClick={() => removePreviewImage(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
               ))}
             </div>
           </div>
-
-          {/* Submit Button */}
-          <div className="col-12">
-            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-              {loading ? (
-                <span className="spinner-border spinner-border-sm" role="status" />
-              ) : (
-                "บันทึก"
-              )}
-            </button>
-          </div>
         </div>
+
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "กำลังบันทึก..." : "บันทึก"}
+        </button>
       </form>
     </div>
-
   );
 };
 

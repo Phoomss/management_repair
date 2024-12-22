@@ -12,7 +12,6 @@ const CaseDetail = () => {
     const fetchCaseDetail = async () => {
       try {
         const response = await caseService.caseById(id);
-        console.log(response.data.data);
         setCaseDetail(response.data.data);
       } catch (error) {
         console.error("Error fetching case detail:", error);
@@ -30,7 +29,6 @@ const CaseDetail = () => {
     return (
       <div className="container mt-4 text-center">
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
         </div>
         <p>กำลังโหลดข้อมูล...</p>
       </div>
