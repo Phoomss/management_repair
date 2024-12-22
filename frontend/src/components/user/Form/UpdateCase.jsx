@@ -20,8 +20,8 @@ const UpdateCase = () => {
     pipe: "",
     size: "",
     dma: "",
-    inspector: "", // Inspector ID
-    images: [], // Make sure this is initialized as an empty array
+    inspector: "",
+    images: [],
   });
   const [previewImages, setPreviewImages] = useState([]);
   const [pipes, setPipes] = useState([]);
@@ -52,7 +52,7 @@ const UpdateCase = () => {
           dma: caseData.dma,
           inspector: caseData.inspector,
         });
-
+        console.log(res.data.data);
         setMapCenter({
           lat: parseFloat(caseData.latitude),
           lng: parseFloat(caseData.longitude),
@@ -89,18 +89,22 @@ const UpdateCase = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
+    // เช็คถ้าเป็นฟิลด์วันที่
     if (name === "date") {
-      // If it's a date, format it to yyyy-MM-dd before updating the state
-      const formattedDate = new Date(value).toISOString().split("T")[0];
-      setFormData({
-        ...formData,
+      // ตรวจสอบว่า value เป็นวันที่ที่ถูกต้อง
+      const formattedDate = value ? new Date(value).toISOString().split("T")[0] : "";
+
+      // อัพเดต state
+      setFormData((prevData) => ({
+        ...prevData,
         [name]: formattedDate,
-      });
+      }));
     } else {
-      setFormData({
-        ...formData,
+      // อัพเดตค่าอื่น ๆ
+      setFormData((prevData) => ({
+        ...prevData,
         [name]: value,
-      });
+      }));
     }
   };
 
@@ -153,12 +157,21 @@ const UpdateCase = () => {
 
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key]);
+      if (key !== 'inspector' && key !== 'pipe') { // Don't append inspector here, it's done separately
+        formDataToSend.append(key, formData[key]);
+      }
     });
-    images.forEach((file) => formDataToSend.append("images", file));
+
+    // Add the inspector ID separately
+    formDataToSend.append("pipe", formData.pipe._id);
+    formDataToSend.append("inspector", formData.inspector._id);
+
+    // Add the images to the formData
+    formData.images.forEach((file) => formDataToSend.append("images", file));
 
     try {
       const response = await caseService.updateCase(id, formDataToSend);
+      console.log(response);
       Swal.fire({
         title: "Success!",
         text: response.data.msg,
@@ -177,6 +190,7 @@ const UpdateCase = () => {
     }
   };
 
+
   return (
     <div className="container py-4">
       <form onSubmit={handleSubmit} encType="multipart/form-data" noValidate>
@@ -194,13 +208,13 @@ const UpdateCase = () => {
                   className="form-control"
                   id="inspector"
                   name="inspector"
-                  value={`${formData.inspector.title || ""}${
-                    formData.inspector.firstName
-                  } ${formData.inspector.lastName}`}
+                  value={`${formData.inspector.title || ""}${formData.inspector.firstName
+                    } ${formData.inspector.lastName}`}
                   onChange={(e) =>
                     setFormData({ ...formData, inspector: e.target.value })
                   }
                   required
+                  disabled
                 />
               </div>
 
@@ -321,7 +335,7 @@ const UpdateCase = () => {
                   className="form-control"
                   id="pipe"
                   name="pipe"
-                  value={formData.pipe}
+                  value={formData.pipe?._id || ""}  
                   onChange={handleChange}
                   required
                 >

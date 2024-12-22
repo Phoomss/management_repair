@@ -1,6 +1,7 @@
 const stepTestRouter = require("express").Router();
 const stepTestController = require("../controllers/stepTestController");
 const upload = require("../config/multerConfig");
+const authenticateToken = require('../middleware/auth');
 
 stepTestRouter.post(
   "/",
@@ -8,6 +9,7 @@ stepTestRouter.post(
   stepTestController.createStepTest
 );
 
+stepTestRouter.get("/info",authenticateToken, stepTestController.getStepTestInfo);
 stepTestRouter.get("/", stepTestController.listStepTest);
 stepTestRouter.get("/:id", stepTestController.getStepTestById);
 

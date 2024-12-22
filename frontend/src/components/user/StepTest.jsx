@@ -19,7 +19,7 @@ const StepTest = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await stepTestService.listStepTest();
+        const res = await stepTestService.getStepTestInfo();
         setStepTests(res.data.data || []);
         // console.log(res.data.data);
       } catch (error) {

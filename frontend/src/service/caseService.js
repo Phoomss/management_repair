@@ -9,6 +9,10 @@ const createCase = async (caseData) => {
     });
 };
 
+const getCaseInfo = async () => {
+    return await http.get('/api/case/info');
+}
+
 // Get a list of cases
 const listCase = async () => {
     return await http.get('/api/case/');
@@ -35,6 +39,7 @@ const deleteCase = async (id) => {
 
 const caseService = {
     createCase,
+    getCaseInfo,
     listCase,
     caseById,
     updateCase,

@@ -46,6 +46,16 @@ const createCase = async (req, res) => {
     }
 };
 
+const getCaseInfo = async(req,res)=>{
+    try {
+        const query = await caseModel.find({inspect:req.user._id}).populate('pipe').populate('inspector') // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
+        res.status(200).json({data:query})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 const listCase = async (req, res) => {
     try {
         const query = await caseModel.find().populate('pipe').populate('inspector') // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
@@ -175,6 +185,7 @@ const deleteCase = async (req, res) => {
 
 module.exports = {
     createCase,
+    getCaseInfo,
     listCase,
     getCaseById,
     updateCase,  

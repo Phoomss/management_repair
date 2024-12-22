@@ -80,10 +80,10 @@ const CreateStepTest = () => {
 
     if (validFiles.length !== files.length) {
       Swal.fire({
-        title: "Invalid Files!",
-        text: "Ensure all files are JPEG/PNG and less than 5MB.",
+        title: "ไฟล์ไม่ถูกต้อง!",
+        text: "โปรดตรวจสอบว่าไฟล์ทั้งหมดเป็น JPEG/PNG และมีขนาดไม่เกิน 5MB.",
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "ตกลง",
       });
       return;
     }

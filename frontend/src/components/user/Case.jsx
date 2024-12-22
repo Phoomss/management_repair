@@ -15,7 +15,7 @@ const Case = () => {
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const response = await caseService.listCase(); // Fetch the cases
+        const response = await caseService.getCaseInfo(); // Fetch the cases
         setCases(response.data.data);
         setTotalPages(Math.ceil(response.data.data.length / itemsPerPage)); // Calculate total pages
       } catch (error) {

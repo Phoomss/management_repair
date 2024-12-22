@@ -8,6 +8,10 @@ const createStepTest = async (stepTestData) => {
     })
 }
 
+const getStepTestInfo = async () => {
+    return await http.get('/api/step-test/info')
+}
+
 const listStepTest = async () => {
     return await http.get('/api/step-test')
 }
@@ -30,6 +34,7 @@ const deleteStepTest = async (id) => {
 
 const stepTesstService = {
     createStepTest,
+    getStepTestInfo,
     listStepTest,
     stepTestById,
     updateStepTest,

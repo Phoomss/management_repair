@@ -64,6 +64,19 @@ const createStepTest = async (req, res) => {
   }
 };
 
+const getStepTestInfo = async (req, res) => {
+  try {
+    const query = await stepTestModel.find({ inspector: req.user._id }).populate('inspector');
+
+    return res.status(200).json({
+      data: query,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 const listStepTest = async (req, res) => {
   try {
     const query = await stepTestModel.find().populate('inspector');
@@ -214,6 +227,7 @@ const deleteStepTest = async (req, res) => {
 
 module.exports = {
   createStepTest,
+  getStepTestInfo,
   listStepTest,
   getStepTestById,
   updateStepTest,
