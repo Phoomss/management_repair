@@ -46,10 +46,13 @@ const createCase = async (req, res) => {
     }
 };
 
-const getCaseInfo = async(req,res)=>{
+const getCaseInfo = async (req, res) => {
     try {
-        const query = await caseModel.find({inspect:req.user._id}).populate('pipe').populate('inspector') // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
-        res.status(200).json({data:query})
+        const query = await caseModel.find({ inspector: req.user._id })
+            .populate('pipe')
+            .populate('inspector');
+
+        res.status(200).json({ data: query })
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
@@ -59,7 +62,7 @@ const getCaseInfo = async(req,res)=>{
 const listCase = async (req, res) => {
     try {
         const query = await caseModel.find().populate('pipe').populate('inspector') // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
-        res.status(200).json({data:query})
+        res.status(200).json({ data: query })
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
@@ -86,37 +89,37 @@ const updateCase = async (req, res) => {
     try {
         const { id } = req.params;
 
-       // เก็บ URL ของรูปภาพใหม่ที่อัปโหลด
-          let imageUrls = [];
-          if (req.files && req.files.length > 0) {
+        // เก็บ URL ของรูปภาพใหม่ที่อัปโหลด
+        let imageUrls = [];
+        if (req.files && req.files.length > 0) {
             imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
-      
+
             // ตรวจสอบขนาดไฟล์
             req.files.forEach((file) => {
-              if (file.size > 5000000) {
-                return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
-              }
+                if (file.size > 5000000) {
+                    return res.status(400).json({ msg: "รูปควรมีขนาดน้อยกว่าหรือเท่ากับ 5 MB" });
+                }
             });
-      
+
             // ลบรูปภาพเก่าก่อนที่จะอัปเดต
             if (stepTest.images && stepTest.images.length > 0) {
-              stepTest.images.forEach((oldImage) => {
-                // สร้างเส้นทางที่ถูกต้องในการลบไฟล์
-                const imagePath = path.join(__dirname, '..', 'uploads', oldImage.replace('/uploads/', ''));
-                console.log(`กำลังลบไฟล์: ${imagePath}`);
-                fs.unlink(imagePath, (err) => {
-                  if (err) {
-                    console.error(`ไม่สามารถลบไฟล์ ${oldImage} ได้`, err);
-                  }
+                stepTest.images.forEach((oldImage) => {
+                    // สร้างเส้นทางที่ถูกต้องในการลบไฟล์
+                    const imagePath = path.join(__dirname, '..', 'uploads', oldImage.replace('/uploads/', ''));
+                    console.log(`กำลังลบไฟล์: ${imagePath}`);
+                    fs.unlink(imagePath, (err) => {
+                        if (err) {
+                            console.error(`ไม่สามารถลบไฟล์ ${oldImage} ได้`, err);
+                        }
+                    });
                 });
-              });
             }
-          }
+        }
 
         // Extract other fields from the request body
         const {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
-            latitude, longitude, pipe, size, dma,inspector
+            latitude, longitude, pipe, size, dma, inspector
         } = req.body;
 
         // Update the case in the database
@@ -128,7 +131,7 @@ const updateCase = async (req, res) => {
                 images: imageUrls.length > 0 ? imageUrls : undefined, inspector
             }
         );
-        
+
         if (!updatedCase) {
             return res.status(404).json({ message: "Case not found" });
         }
@@ -158,7 +161,7 @@ const deleteCase = async (req, res) => {
         if (caseToDelete.images && caseToDelete.images.length > 0) {
             caseToDelete.images.forEach(imagePath => {
                 // Construct the full file path (use 'uploads' folder relative path)
-                const filePath = path.join(__dirname, '..', 'uploads', imagePath.replace('/uploads/', '')); 
+                const filePath = path.join(__dirname, '..', 'uploads', imagePath.replace('/uploads/', ''));
 
                 // Check if the file exists and then delete
                 if (fs.existsSync(filePath)) {
@@ -188,6 +191,6 @@ module.exports = {
     getCaseInfo,
     listCase,
     getCaseById,
-    updateCase,  
-    deleteCase,  
+    updateCase,
+    deleteCase,
 };
