@@ -3,33 +3,32 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import caseService from '../../service/caseService';
 
-// Register Chart.js components
+// Register the necessary components for Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const CaseMonth = () => {
+const CaseWeekUser = () => {
   const [caseData, setCaseData] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await caseService.listCase();
+        const res = await caseService.getCaseInfo();
         const rawData = res.data.data;
 
-        // Group cases by month
-        const monthlyCounts = Array(12).fill(0); // 12 months
+        // Group cases by week
+        const weeklyCounts = [0, 0, 0, 0];
         rawData.forEach((item) => {
           const createdAt = new Date(item.createdAt);
-          const month = createdAt.getMonth();
-          monthlyCounts[month]++;
+          const weekNumber = Math.ceil(createdAt.getDate() / 7);
+          if (weekNumber >= 1 && weekNumber <= 4) {
+            weeklyCounts[weekNumber - 1]++;
+          }
         });
 
         setCaseData({
-          labels: [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-          ],
-          data: monthlyCounts
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          data: weeklyCounts
         });
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -42,16 +41,13 @@ const CaseMonth = () => {
   }, []);
 
   const data = {
-    labels: caseData?.labels || [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ],
+    labels: caseData?.labels || ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
     datasets: [
       {
-        label: 'จำนวนการแจ้งประจำเดือน',
-        data: caseData?.data || Array(12).fill(0),
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        label: 'จำนวนการแจ้งประจำสัปดาห์',
+        data: caseData?.data || [0, 0, 0, 0],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1
       }
     ]
@@ -62,7 +58,7 @@ const CaseMonth = () => {
     plugins: {
       title: {
         display: true,
-        text: 'จำนวนการแจ้งประจำเดือน'
+        text: 'จำนวนการแจ้งประจำสัปดาห์'
       },
       tooltip: {
         callbacks: {
@@ -83,10 +79,10 @@ const CaseMonth = () => {
 
   return (
     <div>
-      <h3>จำนวนการแจ้งจุดท่อรั่วประจำเดือน</h3>
+      <h3>จำนวนการแจ้งจุดท่อรั่วประจำสัปดาห์</h3>
       <Bar data={data} options={options} />
     </div>
   );
 };
 
-export default CaseMonth;
+export default CaseWeekUser;

@@ -6,14 +6,14 @@ import caseService from '../../service/caseService';
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const CaseMonth = () => {
+const CaseMonthUser = () => {
   const [caseData, setCaseData] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await caseService.listCase();
+        const res = await caseService.getCaseInfo();
         const rawData = res.data.data;
 
         // Group cases by month
@@ -89,4 +89,4 @@ const CaseMonth = () => {
   );
 };
 
-export default CaseMonth;
+export default CaseMonthUser;

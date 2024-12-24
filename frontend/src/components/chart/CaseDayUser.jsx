@@ -6,7 +6,7 @@ import caseService from '../../service/caseService';
 // Register the necessary components for Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const CaseDay = () => {
+const CaseDayUser = () => {
   const [caseData, setCaseData] = useState({
     labels: [],
     data: []
@@ -16,7 +16,7 @@ const CaseDay = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await caseService.listCase();
+        const res = await caseService.getCaseInfo();
         const data = res.data.data;
 
         // Process the data to extract labels and counts for each day
@@ -89,4 +89,4 @@ const CaseDay = () => {
   );
 };
 
-export default CaseDay;
+export default CaseDayUser;

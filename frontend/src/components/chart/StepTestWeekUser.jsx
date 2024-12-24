@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import caseService from '../../service/caseService';
+import stepTesstService from '../../service/stepTestService';
 
 // Register the necessary components for Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const CaseWeek = () => {
-  const [caseData, setCaseData] = useState();
+const StepTestWeekUser = () => {
+  const [stepTestData, setStepTestData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await caseService.listCase();
+        const res = await stepTesstService.getStepTestInfo();
         const rawData = res.data.data;
 
-        // Group cases by week
         const weeklyCounts = [0, 0, 0, 0];
         rawData.forEach((item) => {
           const createdAt = new Date(item.createdAt);
-          const weekNumber = Math.ceil(createdAt.getDate() / 7);
+          const weekNumber = Math.ceil(createdAt.getDate() / 7); // Calculate the week number
           if (weekNumber >= 1 && weekNumber <= 4) {
             weeklyCounts[weekNumber - 1]++;
           }
         });
 
-        setCaseData({
+        setStepTestData({
           labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-          data: weeklyCounts
+          data: weeklyCounts,
         });
       } catch (error) {
+        setError('Error fetching data. Please try again later.');
         console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
@@ -38,19 +39,27 @@ const CaseWeek = () => {
     };
 
     fetchData();
-  }, []);
+  }, []); // Dependency array ensures the effect runs only once
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   const data = {
-    labels: caseData?.labels || ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    labels: stepTestData?.labels || ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
     datasets: [
       {
-        label: 'จำนวนการแจ้งประจำสัปดาห์',
-        data: caseData?.data || [0, 0, 0, 0],
+        label: 'จำนวนการแจ้ง STEP TEST ประจำสัปดาห์',
+        data: stepTestData?.data || [0, 0, 0, 0],
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const options = {
@@ -58,31 +67,24 @@ const CaseWeek = () => {
     plugins: {
       title: {
         display: true,
-        text: 'จำนวนการแจ้งประจำสัปดาห์'
+        text: 'จำนวนการแจ้ง STEP TEST ประจำสัปดาห์',
+        font: {
+          size: 18,
+        },
       },
-      tooltip: {
-        callbacks: {
-          label: (tooltipItem) => `${tooltipItem.dataset.label}: ${tooltipItem.raw} cases`
-        }
-      }
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
     },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
   };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <div>
-      <h3>จำนวนการแจ้งจุดท่อรั่วประจำสัปดาห์</h3>
+      <h3>จำนวนการแจ้ง STEP TEST ประจำสัปดาห์</h3>
       <Bar data={data} options={options} />
     </div>
   );
 };
 
-export default CaseWeek;
+export default StepTestWeekUser;

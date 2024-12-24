@@ -15,7 +15,8 @@ const Case = () => {
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const response = await caseService.getCaseInfo(); // Fetch the cases
+        const response = await caseService.getCaseInfo(); 
+        console.log(response.data.data);
         setCases(response.data.data);
         setTotalPages(Math.ceil(response.data.data.length / itemsPerPage)); // Calculate total pages
       } catch (error) {
@@ -27,15 +28,15 @@ const Case = () => {
   }, []);
 
   const handleNextCreate = () => {
-    navigate("/admin/case/create");
+    navigate("/user/case/create");
   };
 
   const handleNextDetail = (id) => {
-    navigate(`/admin/case/detail/${id}`);
+    navigate(`/user/case/detail/${id}`);
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/case/edit/${id}`);
+    navigate(`/user/case/edit/${id}`);
   };
 
   const handleDelete = async (id) => {

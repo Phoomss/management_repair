@@ -149,7 +149,7 @@ const CreateCase = () => {
         text: response.data.msg,
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => navigate("/admin/case"));
+      }).then(() => navigate("/user/case"));
     } catch (err) {
       Swal.fire({
         title: "Error!",
