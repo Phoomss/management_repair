@@ -12,7 +12,7 @@ const UserCaseDetailPage = () => {
                 </div>{/* /.col */}
                 <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-right">
-                        <li className="breadcrumb-item"><a href="#">admin</a></li>
+                        <li className="breadcrumb-item"><a href="#">user</a></li>
                         <li className="breadcrumb-item active">case</li>
                         <li className="breadcrumb-item active">detail</li>
                     </ol>
