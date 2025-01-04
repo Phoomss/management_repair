@@ -47,13 +47,24 @@ const EditStepTest = () => {
     }
   };
 
+  // // Handle adding a new round
+  // const handleAddRound = () => {
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     rounds: [
+  //       ...prevState.rounds,
+  //       { stepTest: "", roundNo: prevState.rounds.length + 1, value: "" },
+  //     ],
+  //   }));
+  // };
+
   // Handle adding a new round
   const handleAddRound = () => {
     setFormData((prevState) => ({
       ...prevState,
       rounds: [
         ...prevState.rounds,
-        { stepTest: "", roundNo: prevState.rounds.length + 1, value: "" },
+        { stepTest: "", roundNo: "", value: "" },
       ],
     }));
   };
@@ -330,7 +341,7 @@ const EditStepTest = () => {
                     ))}
                   </select>
                 </div>
-                <div className="col-md-3">
+                {/* <div className="col-md-3">
                   <label htmlFor={`roundNo-${index}`} className="form-label">
                     Round No.
                   </label>
@@ -341,6 +352,19 @@ const EditStepTest = () => {
                     name="roundNo"
                     value={step.roundNo}
                     readOnly
+                  />
+                </div> */}
+                <div className="col-md-3">
+                  <label htmlFor={`roundNo-${index}`} className="form-label">
+                    Round No.
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id={`roundNo-${index}`}
+                    name="roundNo"
+                    value={step.roundNo}
+                    onChange={(e) => handleInputChange(e, index)}
                   />
                 </div>
                 <div className="col-md-3">

@@ -13,6 +13,7 @@ const CreateStepTest = () => {
     subdistrict: "",
     district: "",
     province: "",
+    // rounds: [{ roundNo: 1, stepTest: "", value: "" }],
     rounds: [{ roundNo: 1, stepTest: "", value: "" }],
     images: [],
     inspector: "",
@@ -53,13 +54,23 @@ const CreateStepTest = () => {
     setFormData({ ...formData, rounds: updatedRounds });
   };
 
+  // const handleAddRound = () => {
+  //   const nextRoundNo = formData.rounds.length + 1; // คำนวณเลขรอบใหม่
+  //   setFormData({
+  //     ...formData,
+  //     rounds: [
+  //       ...formData.rounds,
+  //       { roundNo: nextRoundNo, stepTest: "", value: "" },
+  //     ],
+  //   });
+  // };
+
   const handleAddRound = () => {
-    const nextRoundNo = formData.rounds.length + 1; // คำนวณเลขรอบใหม่
     setFormData({
       ...formData,
       rounds: [
         ...formData.rounds,
-        { roundNo: nextRoundNo, stepTest: "", value: "" },
+        { roundNo: "", stepTest: "", value: "" },
       ],
     });
   };
@@ -83,7 +94,7 @@ const CreateStepTest = () => {
         title: "ไฟล์ไม่ถูกต้อง!",
         text: "โปรดตรวจสอบว่าไฟล์ทั้งหมดเป็น JPEG/PNG และมีขนาดไม่เกิน 5MB.",
         icon: "error",
-        confirmButtonText: "ตกลง",        
+        confirmButtonText: "ตกลง",
       });
       return;
     }
@@ -304,7 +315,7 @@ const CreateStepTest = () => {
                     ))}
                   </select>
                 </div>
-                <div className="col-md-3">
+                {/* <div className="col-md-3">
                   <label htmlFor={`roundNo-${index}`} className="form-label">Round No.</label>
                   <input
                     type="number"
@@ -313,6 +324,18 @@ const CreateStepTest = () => {
                     name="roundNo" // กำหนด name หากจำเป็น (ในที่นี้ไม่จำเป็นเพราะ readOnly)
                     value={step.roundNo}
                     readOnly
+                  />
+                </div> */}
+
+                <div className="col-md-3">
+                  <label htmlFor={`roundNo-${index}`} className="form-label">Round No.</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id={`roundNo-${index}`}
+                    name="roundNo"
+                    value={step.roundNo}
+                    onChange={(e) => handleInputChange(e, index)}
                   />
                 </div>
                 <div className="col-md-3">
