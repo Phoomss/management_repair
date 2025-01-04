@@ -32,7 +32,7 @@ const CaseDetail = () => {
       <div className="mb-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="text-secondary">ข้อมูลงาน</h5>
-          <span className={`badge ${caseDetail.status === "Complete" ? "bg-success" : "bg-warning"}`}>
+          <span className={`badge ${caseDetail.status === "อนุมัติ" ? "bg-success" : "bg-warning"}`}>
             {caseDetail.status}
           </span>
         </div>

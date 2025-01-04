@@ -9,13 +9,14 @@ const Case = () => {
   const [totalPages, setTotalPages] = useState(1); // Track total pages
   const [searchDate, setSearchDate] = useState(""); // State to track search by date
   const [searchDma, setSearchDma] = useState(""); // State to track search by DMA
+  const [searchStatus, setSearchStatus] = useState(""); // State to track search by status
   const itemsPerPage = 10; // Define the number of items per page
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const response = await caseService.getCaseInfo(); 
+        const response = await caseService.getCaseInfo();
         console.log(response.data.data);
         setCases(response.data.data);
         setTotalPages(Math.ceil(response.data.data.length / itemsPerPage)); // Calculate total pages
@@ -39,34 +40,34 @@ const Case = () => {
     navigate(`/user/case/edit/${id}`);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const result = await Swal.fire({
-        title: "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ลบ",
-        cancelButtonText: "ยกเลิก",
-      });
+  // const handleDelete = async (id) => {
+  //   try {
+  //     const result = await Swal.fire({
+  //       title: "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "ลบ",
+  //       cancelButtonText: "ยกเลิก",
+  //     });
 
-      if (result.isConfirmed) {
-        await caseService.deleteCase(id);
-        setCases(cases.filter((caseItem) => caseItem._id !== id));
+  //     if (result.isConfirmed) {
+  //       await caseService.deleteCase(id);
+  //       setCases(cases.filter((caseItem) => caseItem._id !== id));
 
-        Swal.fire({
-          title: "ลบข้อมูลเรียบร้อยแล้ว",
-          icon: "success",
-        });
-      }
-    } catch (error) {
-      console.error("Error deleting case:", error);
+  //       Swal.fire({
+  //         title: "ลบข้อมูลเรียบร้อยแล้ว",
+  //         icon: "success",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting case:", error);
 
-      Swal.fire({
-        title: "เกิดข้อผิดพลาดในการลบข้อมูล",
-        icon: "error",
-      });
-    }
-  };
+  //     Swal.fire({
+  //       title: "เกิดข้อผิดพลาดในการลบข้อมูล",
+  //       icon: "error",
+  //     });
+  //   }
+  // };
 
   // Pagination handler
   const handlePreviousPage = () => {
@@ -95,7 +96,10 @@ const Case = () => {
       ? caseItem.dma && caseItem.dma.toLowerCase().includes(searchDma.toLowerCase())
       : true;
 
-    return matchesDate && matchesDma;
+    const matchesStatus = searchStatus
+      ? caseItem.status && caseItem.status.toLowerCase().includes(searchStatus.toLowerCase())
+      : true;
+    return matchesDate && matchesDma && matchesStatus;
   })
 
   // Get cases to display for the current page
@@ -124,9 +128,19 @@ const Case = () => {
           type="text"
           value={searchDma}
           onChange={(e) => setSearchDma(e.target.value)}
-          className="form-control"
+          className="form-control me-2"
           placeholder="ค้นหาด้วย DMA"
         />
+        <select
+          value={searchStatus}
+          onChange={(e) => setSearchStatus(e.target.value)}
+          className="form-control"
+        >
+          <option value="">-- สถานะทั้งหมด --</option>
+          <option value="รอการอนุมัติ">รอการอนุมัติ</option>
+          <option value="อนุมัติ">อนุมัติแล้ว</option>
+          {/* เพิ่มตัวเลือกอื่นๆ ถ้ามี */}
+        </select>
       </div>
 
       <div className="table-responsive">
@@ -171,8 +185,14 @@ const Case = () => {
                       ))}
                     </div>
                   </td>
-                  <td><p className="border border-warning rounded p-1 bg-warning">
-                  {caseItem.status}</p></td>
+                  <td>
+                    {caseItem.status === "รอการอนุมัติ" ? (
+                      <p className="border border-warning rounded p-1 bg-warning">
+                        {caseItem.status}</p>
+                    ) : (
+                      <p className="border border-success rounded p-1 bg-success"> {caseItem.status}</p>
+                    )}
+                  </td>
                   <td>
                     <button
                       className="btn btn-info btn-sm mx-1"
@@ -186,18 +206,18 @@ const Case = () => {
                     >
                       แก้ไข
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-danger btn-sm mx-1"
                       onClick={() => handleDelete(caseItem._id)}
                     >
                       ลบ
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6">ไม่มีข้อมูล</td>
+                <td colSpan="7">ไม่มีข้อมูล</td>
               </tr>
             )}
           </tbody>

@@ -9,6 +9,7 @@ const Case = () => {
   const [totalPages, setTotalPages] = useState(1); // Track total pages
   const [searchDate, setSearchDate] = useState(""); // State to track search by date
   const [searchDma, setSearchDma] = useState(""); // State to track search by DMA
+  const [searchStatus, setSearchStatus] = useState(""); // State to track search by status
   const itemsPerPage = 10; // Define the number of items per page
   const navigate = useNavigate();
 
@@ -33,6 +34,26 @@ const Case = () => {
   const handleNextDetail = (id) => {
     navigate(`/admin/case/detail/${id}`);
   };
+
+  const handleApproval = async (id) => {
+    try {
+      await caseService.updateCase(id, { status: "อนุมัติ" });
+      const response = await caseService.listCase();
+      setCases(response.data.data);
+      console.log(response.data.data);
+      Swal.fire({
+        title: "ยืนยันการตรวจสอบเรียบร้อยแล้ว",
+        icon: "success",
+      });
+    } catch (error) {
+      console.error("Error approving case:", error);
+
+      Swal.fire({
+        title: "เกิดข้อผิดพลาดในการยืนยันการตรวจสอบ",
+        icon: "error",
+      });
+    }
+  }
 
   const handleEdit = (id) => {
     navigate(`/admin/case/edit/${id}`);
@@ -94,7 +115,10 @@ const Case = () => {
       ? caseItem.dma && caseItem.dma.toLowerCase().includes(searchDma.toLowerCase())
       : true;
 
-    return matchesDate && matchesDma;
+    const matchesStatus = searchStatus
+      ? caseItem.status && caseItem.status.toLowerCase().includes(searchStatus.toLowerCase())
+      : true;
+    return matchesDate && matchesDma && matchesStatus;
   })
 
   // Get cases to display for the current page
@@ -123,9 +147,19 @@ const Case = () => {
           type="text"
           value={searchDma}
           onChange={(e) => setSearchDma(e.target.value)}
-          className="form-control"
+          className="form-control me-2"
           placeholder="ค้นหาด้วย DMA"
         />
+        <select
+          value={searchStatus}
+          onChange={(e) => setSearchStatus(e.target.value)}
+          className="form-control"
+        >
+          <option value="">-- สถานะทั้งหมด --</option>
+          <option value="รอการอนุมัติ">รอการอนุมัติ</option>
+          <option value="อนุมัติ">อนุมัติแล้ว</option>
+          {/* เพิ่มตัวเลือกอื่นๆ ถ้ามี */}
+        </select>
       </div>
 
       <div className="table-responsive">
@@ -137,6 +171,7 @@ const Case = () => {
               <th scope="col">DMA</th>
               <th scope="col">สถานที่</th>
               <th scope="col">ภาพประกอบ</th>
+              <th scope="col">สถานะ</th>
               <th scope="col">จัดการ</th>
             </tr>
           </thead>
@@ -170,11 +205,24 @@ const Case = () => {
                     </div>
                   </td>
                   <td>
+                    {caseItem.status === "รอการอนุมัติ" ? (
+                      <p className="border border-warning bg-warning">{caseItem.status}</p>
+                    ) : (
+                      <p className="border border-success bg-success">{caseItem.status}</p>
+                    )}
+                  </td>
+                  <td>
                     <button
-                      className="btn btn-info btn-sm mx-1"
+                      className="btn btn-primary btn-sm mx-1"
                       onClick={() => handleNextDetail(caseItem._id)}
                     >
                       รายละเอียด
+                    </button>
+                    <button
+                      className="btn btn-info btn-sm mx-1"
+                      onClick={() => handleApproval(caseItem._id)}
+                    >
+                      ยืนยันการตรวจสอบ
                     </button>
                     <button
                       className="btn btn-warning btn-sm mx-1"
@@ -193,7 +241,7 @@ const Case = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6">ไม่มีข้อมูล</td>
+                <td colSpan="7">ไม่มีข้อมูล</td>
               </tr>
             )}
           </tbody>

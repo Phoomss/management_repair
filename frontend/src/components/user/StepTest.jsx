@@ -70,34 +70,34 @@ const StepTest = () => {
   };
 
   
-  const handleDelete = async (id) => {
-    try {
-      const result = await Swal.fire({
-        title: "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ลบ",
-        cancelButtonText: "ยกเลิก",
-      });
+  // const handleDelete = async (id) => {
+  //   try {
+  //     const result = await Swal.fire({
+  //       title: "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "ลบ",
+  //       cancelButtonText: "ยกเลิก",
+  //     });
 
-      if (result.isConfirmed) {
-        await stepTesstService.deleteStepTest(id);
-        setStepTests(stepTests.filter((stepTestItem) => stepTestItem._id !== id));
+  //     if (result.isConfirmed) {
+  //       await stepTesstService.deleteStepTest(id);
+  //       setStepTests(stepTests.filter((stepTestItem) => stepTestItem._id !== id));
 
-        Swal.fire({
-          title: "ลบข้อมูลเรียบร้อยแล้ว",
-          icon: "success",
-        });
-      }
-    } catch (error) {
-      console.error("Error deleting case:", error);
+  //       Swal.fire({
+  //         title: "ลบข้อมูลเรียบร้อยแล้ว",
+  //         icon: "success",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting case:", error);
 
-      Swal.fire({
-        title: "เกิดข้อผิดพลาดในการลบข้อมูล",
-        icon: "error",
-      });
-    }
-  };
+  //     Swal.fire({
+  //       title: "เกิดข้อผิดพลาดในการลบข้อมูล",
+  //       icon: "error",
+  //     });
+  //   }
+  // };
 
   const handleCloseModal = () => setShowModal(false);
 
@@ -171,12 +171,12 @@ const StepTest = () => {
                     >
                       แก้ไข
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-danger btn-sm mx-1"
                       onClick={() => handleDelete(item._id)}
                     >
                       ลบ
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))

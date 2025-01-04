@@ -136,7 +136,7 @@ const updateCase = async (req, res) => {
         // Extract other fields from the request body
         const {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
-            latitude, longitude, pipe, size, dma, inspector
+            latitude, longitude, pipe, size, dma, inspector,status
         } = req.body;
 
         // Update the case in the database
@@ -145,7 +145,7 @@ const updateCase = async (req, res) => {
             {
                 date, numberWork, houseNumber, villageNo, subdistrict, district, province,
                 latitude, longitude, pipe, size, dma,
-                images: imageUrls.length > 0 ? imageUrls : undefined, inspector
+                images: imageUrls.length > 0 ? imageUrls : undefined, inspector,status
             }
         );
 
