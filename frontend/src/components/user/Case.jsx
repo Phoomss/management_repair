@@ -138,6 +138,7 @@ const Case = () => {
               <th scope="col">DMA</th>
               <th scope="col">สถานที่</th>
               <th scope="col">ภาพประกอบ</th>
+              <th scope="col">สถานะ</th>
               <th scope="col">จัดการ</th>
             </tr>
           </thead>
@@ -170,6 +171,8 @@ const Case = () => {
                       ))}
                     </div>
                   </td>
+                  <td><p className="border border-warning rounded p-1 bg-warning">
+                  {caseItem.status}</p></td>
                   <td>
                     <button
                       className="btn btn-info btn-sm mx-1"

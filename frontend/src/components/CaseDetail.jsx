@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { GoogleMap, LoadScript, Marker, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import caseService from "./../service/caseService";
 
 const CaseDetail = () => {
@@ -28,91 +28,63 @@ const CaseDetail = () => {
 
   return (
     <div className="container mt-4">
-      {/* Case Information Section */}
-      <div className="card shadow mb-4">
-        <div className="card-header bg-primary text-white">
-          <h5>รายละเอียดจุดท่อรั่ว</h5>
+      {/* ข้อมูลงาน */}
+      <div className="mb-4">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5 className="text-secondary">ข้อมูลงาน</h5>
+          <span className={`badge ${caseDetail.status === "Complete" ? "bg-success" : "bg-warning"}`}>
+            {caseDetail.status}
+          </span>
         </div>
-        <div className="card-body">
-          <div className="row">
-            <div className="col-md-4 mb-3">
-              <p>
-                <strong>Date:</strong>{" "}
-                {new Date(caseDetail.date).toLocaleDateString("th-TH")}
-              </p>
-              <p>
-                <strong>Work Number:</strong> {caseDetail.numberWork}
-              </p>
-            </div>
-            <div className="col-md-4 mb-3">
-              <p>
-                <strong>Location:</strong>{" "}
-                {`${caseDetail.houseNumber}, Moo ${caseDetail.villageNo}, 
-                T.${caseDetail.subdistrict}, A.${caseDetail.district}, P.${caseDetail.province}`}
-              </p>
-              <p>
-                <strong>DMA:</strong> {caseDetail.dma || "-"}
-              </p>
-            </div>
-            <div className="col-md-4 mb-3">
-              <p>
-                <strong>Pipe:</strong> {caseDetail?.pipe?.pipe || "-"}
-              </p>
-              <p>
-                <strong>Size:</strong> {caseDetail.size || "-"}
-              </p>
-            </div>
+        <div className="row">
+          <div className="col-md-4">
+            <p><strong>วันที่:</strong> {new Date(caseDetail.date).toLocaleDateString("th-TH")}</p>
+            <p><strong>หมายเลขงาน:</strong> {caseDetail.numberWork}</p>
+          </div>
+          <div className="col-md-4">
+            <p><strong>สถานที่:</strong> {`${caseDetail.houseNumber}, หมู่ ${caseDetail.villageNo}, ต.${caseDetail.subdistrict}, อ.${caseDetail.district}, จ.${caseDetail.province}`}</p>
+          </div>
+          <div className="col-md-4">
+            <p><strong>ชนิดท่อ:</strong> {caseDetail?.pipe?.pipe || "-"}</p>
+            <p><strong>ขนาด:</strong> {caseDetail.size || "-"}</p>
           </div>
         </div>
       </div>
 
-      {/* Images Section */}
-      <div className="card shadow mb-4">
-        <div className="card-header bg-secondary text-white">
-          <h5>รูปภาพ</h5>
-        </div>
-        <div className="card-body">
-          <div className="row">
-            {caseDetail.images && caseDetail.images.length > 0 ? (
-              caseDetail.images.map((image, index) => (
-                <div key={index} className="col-md-3 mb-3">
-                  <div className="card">
-                    <img
-                      src={`http://localhost:8080${image}`}
-                      alt={`Case ${caseDetail.numberWork}`}
-                      className="card-img-top img-fluid rounded"
-                      style={{ height: "200px", objectFit: "cover" }}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center">
-                <p>No Images Available</p>
+      {/* รูปภาพ */}
+      <div className="mb-4">
+        <h5 className="mb-3 text-secondary">รูปภาพ</h5>
+        <div className="row">
+          {caseDetail.images && caseDetail.images.length > 0 ? (
+            caseDetail.images.map((image, index) => (
+              <div key={index} className="col-md-3 mb-3">
+                <img
+                  src={`http://localhost:8080${image}`}
+                  alt={`Case ${caseDetail.numberWork}`}
+                  className="img-fluid rounded shadow-sm"
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
               </div>
-            )}
-          </div>
+            ))
+          ) : (
+            <div className="col-12 text-center">
+              <p className="text-muted">ไม่มีรูปภาพ</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className="card shadow mb-4">
-        <div className="card-header bg-success text-white">
-          <h5>ตำแหน่ง</h5>
-        </div>
-        <div className="card-body p-0">
+      {/* ตำแหน่ง */}
+      <div className="mb-4">
+        <h5 className="mb-3 text-secondary">ตำแหน่ง</h5>
+        <div className="rounded shadow-sm" style={{ overflow: "hidden" }}>
           <GoogleMap
             id="map"
             mapContainerStyle={{ width: "100%", height: "400px" }}
             center={{ lat: caseDetail.latitude, lng: caseDetail.longitude }}
             zoom={12}
           >
-            <Marker
-              position={{
-                lat: caseDetail.latitude,
-                lng: caseDetail.longitude,
-              }}
-            />
+            <Marker position={{ lat: caseDetail.latitude, lng: caseDetail.longitude }} />
           </GoogleMap>
         </div>
       </div>

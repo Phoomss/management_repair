@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const status = ['รอการอนุมัติ', 'อนุมัติ', 'ไม่อนุมัติ'];
+
 const caseSchema = new mongoose.Schema({
     date: {
         type: Date,
@@ -58,6 +60,11 @@ const caseSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    status:{
+        type: String,
+        enum: status,
+        required: true,
+    }
 },
     {
         timestamps: true,

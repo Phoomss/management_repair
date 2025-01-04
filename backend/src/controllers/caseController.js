@@ -16,7 +16,7 @@ const createCase = async (req, res) => {
         // ดึงข้อมูลที่ต้องการจาก req.body
         const {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
-            latitude, longitude, pipe, size, dma, inspector
+            latitude, longitude, pipe, size, dma, inspector, status
         } = req.body;
 
         // ตรวจสอบขนาดไฟล์
@@ -31,7 +31,8 @@ const createCase = async (req, res) => {
             date, numberWork, houseNumber, villageNo, subdistrict, district, province,
             latitude, longitude, pipe, size, dma,
             images: imageUrls, // เก็บ URL รูปภาพในฐานข้อมูล
-            inspector
+            inspector,
+            status: "รอการอนุมัติ"
         });
 
         await newCase.save();
@@ -84,6 +85,22 @@ const getCaseById = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+const searchCaseStatus = async (req, res) => {
+    try {
+        const { status } = req.query;
+
+        const caseByStatus = await caseModel.find({ status: status }).populate('pipe').populate('inspector');
+
+        if (!caseByStatus || caseByStatus.length === 0) {
+            return res.status(404).json({ message: "Case not found" });
+        }
+        res.status(200).json({ data: caseByStatus });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 const updateCase = async (req, res) => {
     try {
@@ -191,6 +208,7 @@ module.exports = {
     getCaseInfo,
     listCase,
     getCaseById,
+    searchCaseStatus,
     updateCase,
     deleteCase,
 };

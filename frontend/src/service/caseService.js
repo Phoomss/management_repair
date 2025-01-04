@@ -9,6 +9,14 @@ const createCase = async (caseData) => {
     });
 };
 
+const searchPendingApproval = async () => {
+    return await http.get(`/api/case/search/status?status=รอการอนุมัติ`);
+}
+
+const searchApproval = async () => {
+    return await http.get(`/api/case/search/status?status=อนุมัติ`);
+}
+
 const getCaseInfo = async () => {
     return await http.get('/api/case/info');
 }
@@ -39,6 +47,8 @@ const deleteCase = async (id) => {
 
 const caseService = {
     createCase,
+    searchPendingApproval,
+    searchApproval,
     getCaseInfo,
     listCase,
     caseById,
