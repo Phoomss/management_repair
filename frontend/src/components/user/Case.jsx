@@ -201,6 +201,12 @@ const Case = () => {
                       รายละเอียด
                     </button>
                     <button
+                      className="btn btn-info btn-sm mx-1"
+                      onClick={() => handleDowloadPDF(caseItem._id)}
+                    >
+                      Dowload PDF
+                    </button>
+                    <button
                       className="btn btn-warning btn-sm mx-1"
                       onClick={() => handleEdit(caseItem._id)}
                     >

@@ -29,6 +29,7 @@ import UserDashboardPage from './pages/user/UserDashboardPage';
 import UserEditStepTest from './pages/user/Form/UserEditStepTest';
 import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
 import GenPDF from './components/common/PDF/GenPDF';
+import GenPDFCase from './components/common/PDF/GenPDFCase';
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
         <Route path='/' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/step-test/pdf/:id' element={<GenPDF />} />
+        <Route path='/case/pdf/:id' element={<GenPDFCase />} />
         <Route element={<AdminLayout />} >
           <Route path='/admin/dashboard' element={<AdminDashboardPage />} />
           <Route path='/admin/case' element={<AdminDetailPage />} />

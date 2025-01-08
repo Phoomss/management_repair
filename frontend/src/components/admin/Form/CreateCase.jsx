@@ -22,6 +22,7 @@ const CreateCase = () => {
     dma: "",
     inspector: "",
     images: [],
+    status: "รอการตรวจสอบ",
   });
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
