@@ -30,6 +30,7 @@ const CreateCase = () => {
   const [pipes, setPipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: 13.7367, lng: 100.5232 }); // Default to Bangkok
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   const navigate = useNavigate();
 
@@ -39,15 +40,17 @@ const CreateCase = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        setMapCenter({ lat: latitude, lng: longitude });
+        const currentPos = { lat: latitude, lng: longitude };
+        setMapCenter(currentPos);
+        setCurrentLocation(currentPos);
       },
       (error) => {
         console.error("Error getting location:", error);
         Swal.fire({
           title: "Error!",
-          text: "Unable to fetch your current location. Defaulting to Bangkok.",
+          text: "ไม่สามารถระบุตำแหน่งปัจจุบันได้ แสดงตำแหน่งเริ่มต้นที่กรุงเทพฯ",
           icon: "warning",
-          confirmButtonText: "OK",
+          confirmButtonText: "ตกลง",
         });
       }
     );
@@ -417,7 +420,7 @@ const CreateCase = () => {
                     id="map"
                     mapContainerStyle={{ width: "100%", height: "400px" }}
                     center={mapCenter}
-                    zoom={12}
+                    zoom={15}
                     onClick={(e) => {
                       setFormData({
                         ...formData,
@@ -426,12 +429,28 @@ const CreateCase = () => {
                       });
                     }}
                   >
+                    {/* Selected Location Marker */}
                     {formData.latitude && formData.longitude && (
                       <Marker
                         position={{
                           lat: parseFloat(formData.latitude),
                           lng: parseFloat(formData.longitude),
                         }}
+                        icon={{
+                          url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                        }}
+                        title="ตำแหน่งที่เลือก"
+                      />
+                    )}
+
+                    {/* Current Location Marker */}
+                    {currentLocation && (
+                      <Marker
+                        position={currentLocation}
+                        icon={{
+                          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                        }}
+                        title="ตำแหน่งปัจจุบัน"
                       />
                     )}
                   </GoogleMap>
