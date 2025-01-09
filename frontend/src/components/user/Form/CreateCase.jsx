@@ -33,6 +33,8 @@ const CreateCase = () => {
 
   const navigate = useNavigate();
 
+  const sizePipeOption = [20, 25, 40, 50, 110, 150, 200, 225, 300]
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -184,9 +186,8 @@ const CreateCase = () => {
                   className="form-control"
                   name="inspector"
                   placeholder="ชื่อผู้ตรวจสอบ"
-                  value={`${userInfo.title || ""} ${userInfo.firstName} ${
-                    userInfo.lastName
-                  }`}
+                  value={`${userInfo.title || ""} ${userInfo.firstName} ${userInfo.lastName
+                    }`}
                   disabled
                 />
               </div>
@@ -332,7 +333,7 @@ const CreateCase = () => {
                 <label htmlFor="size" className="form-label">
                   ขนาด
                 </label>
-                <input
+                {/* <input
                   type="text"
                   className="form-control"
                   id="size"
@@ -340,7 +341,22 @@ const CreateCase = () => {
                   value={formData.size}
                   onChange={handleChange}
                   required
-                />
+                /> */}
+                <select
+                  className="form-control"
+                  id="size"
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select</option>
+                  {sizePipeOption.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="col-md-4">
                 <label htmlFor="dma" className="form-label">
