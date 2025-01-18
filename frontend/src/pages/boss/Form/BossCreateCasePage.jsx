@@ -1,8 +1,7 @@
 import React from 'react'
-import CreateCase from '../../../components/admin/Form/CreateCase'
+import CreateCase from '../../../components/boss/Form/CreateCase'
 
-
-const AdminCreateCasePage = () => {
+const BossCreateCasePage = () => {
     return (
         <div className='p-2'>
             <div className="content-header">
@@ -13,7 +12,7 @@ const AdminCreateCasePage = () => {
                         </div>{/* /.col */}
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li className="breadcrumb-item"><a href="#">admin</a></li>
+                                <li className="breadcrumb-item"><a href="#">boss</a></li>
                                 <li className="breadcrumb-item active">case</li>
                                 <li className="breadcrumb-item active">create</li>
                             </ol>
@@ -26,4 +25,4 @@ const AdminCreateCasePage = () => {
     )
 }
 
-export default AdminCreateCasePage
+export default BossCreateCasePage

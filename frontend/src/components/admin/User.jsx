@@ -6,7 +6,7 @@ import userService from '../../service/userService';
 const User = () => {
     const [User, setUser] = useState([]);
     const [filteredUser, setFilteredUser] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchName, setSearchName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [error, setError] = useState('');
@@ -18,7 +18,7 @@ const User = () => {
             try {
                 const res = await userService.userAll();
                 setUser(res.data.data);
-                setFilteredUser(res.data.data); // Initialize filteredUser with all User
+                setFilteredUser(res.data.data);
             } catch (error) {
                 console.error('Error fetching User:', error);
             }
@@ -56,30 +56,30 @@ const User = () => {
         }
     };
 
-    const handleSearch = (e) => {
-        const searchTerm = e.target.value;
-        setSearchTerm(searchTerm);
-        filterUser(searchTerm);
+    const handleSearch = (e, type) => {
+        const value = e.target.value;
+        if (type === 'name') {
+            setSearchName(value);
+        } else if (type === 'role') {
+            setSearchRole(value);
+        }
+        filterUser(value, type);
     };
 
-    const filterUser = (searchTerm) => {
+    const filterUser = (value, type) => {
         let filtered = User;
-    
-        // Apply search filter
-        if (searchTerm.trim() !== '') {
+
+        if (type === 'name' && value.trim() !== '') {
             filtered = filtered.filter(user =>
-                user.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.phone.includes(searchTerm) ||
-                (user.role && user.role.toLowerCase().includes(searchTerm.toLowerCase())) // Include role in the search
+                `${user.title} ${user.firstName} ${user.lastName}`
+                    .toLowerCase()
+                    .includes(value.toLowerCase())
             );
         }
-    
+
         setFilteredUser(filtered);
-        setCurrentPage(1); // Reset to the first page when filters change
-    };    
+        setCurrentPage(1); // Reset to first page when filters change
+    };
 
     // Pagination handlers
     const totalPages = Math.ceil(filteredUser.length / itemsPerPage);
@@ -111,9 +111,9 @@ const User = () => {
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="Search User"
-                    value={searchTerm}
-                    onChange={handleSearch}
+                    placeholder="Search by Name"
+                    value={searchName}
+                    onChange={(e) => handleSearch(e, 'name')}
                 />
             </div>
 

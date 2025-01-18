@@ -13,6 +13,7 @@ const EmployeeCreateCasePage = () => {
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
                                 <li className="breadcrumb-item"><a href="#">employee</a></li>
+                                <li className="breadcrumb-item active">case</li>
                                 <li className="breadcrumb-item active">create</li>
                             </ol>
                         </div>{/* /.col */}

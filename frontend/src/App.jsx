@@ -31,6 +31,18 @@ import EmployeeCreateStepTestPage from './pages/employee/Form/EmployeeCreateStep
 import EmployeeEditStepTest from './pages/employee/Form/EmployeeEditStepTest';
 import EmployeeProfilePage from './pages/employee/EmployeeProfilePage';
 
+import BossLayout from './layouts/BossLayout';
+import BossDashboardPage from './pages/boss/BossDashboardPage';
+import BossDetailPage from './pages/boss/BossDetailPage';
+import BossCaseDetail from './pages/boss/BossCaseDetail';
+import BossCreateCasePage from './pages/boss/Form/BossCreateCasePage';
+import BossEditCasePage from './pages/boss/Form/BossEditCasePage';
+import BossStepTespPage from './pages/boss/BossStepTespPage';
+import BossCreateStepTestPage from './pages/boss/Form/BossCreateStepTestPage';
+import BossEditStepTestPage from './pages/boss/Form/BossEditStepTestPage';
+import BossPipePage from './pages/boss/BossPipePage';
+import BossProfilePage from './pages/boss/BossProfilePage';
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -53,6 +65,18 @@ const App = () => {
           <Route path='/admin/user' element={<AdminUserPage />} />
           <Route path='/admin/user/edit/:id' element={<AdminEditUserPage />} />
           <Route path='/admin/profile' element={<AdminProfilePage />} />
+        </Route>
+        <Route element={<BossLayout />} >
+          <Route path='/boss/dashboard' element={<BossDashboardPage />} />
+          <Route path='/boss/case' element={<BossDetailPage />} />
+          <Route path='/boss/case/detail/:id' element={<BossCaseDetail />} />
+          <Route path='/boss/case/create' element={<BossCreateCasePage />} />
+          <Route path='/boss/case/edit/:id' element={<BossEditCasePage />} />
+          <Route path='/boss/step-test' element={<BossStepTespPage />} />
+          <Route path='/boss/step-test/create' element={<BossCreateStepTestPage />} />
+          <Route path='/boss/step-test/edit/:id' element={<BossEditStepTestPage />} />
+          <Route path='/boss/pipe' element={<BossPipePage />} />
+          <Route path='/boss/profile' element={<BossProfilePage />} />
         </Route>
         <Route element={<EmployeeLayout />}>
           <Route path='/employee/dashboard' element={<EmployeeDashboardPage />} />

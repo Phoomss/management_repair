@@ -119,6 +119,7 @@ const CreateUser = () => {
               required
             >
               <option value="" disabled>สถานะ</option>
+              <option value="admin">แอดมิน</option>
               <option value="boss">หัวหน้างาน</option>
               <option value="employee">พนักงาน</option>
             </select>
