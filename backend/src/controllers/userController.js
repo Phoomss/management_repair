@@ -18,7 +18,9 @@ const getUserInfo = async (req, res) => {
 // Get all users
 const getAllUsers = async (req, res) => {
     try {
-        const users = await userModel.find({ role: 'user' }).select('-admin');
+        // Filter out users with the 'admin' role
+        const users = await userModel.find({ }).select('-password');
+        
         res.status(200).json({ data: users });
     } catch (error) {
         console.error(error);
@@ -69,7 +71,7 @@ const getUserById = async (req, res) => {
 // update profile
 const updateProfile = async (req, res) => {
     try {
-        const { title, firstName, lastName, username, password, tel } = req.body;
+        const { title, firstName, lastName, username, password, phone,role } = req.body;
         const user = await userModel.findById(req.user._id);
 
         // ตรวจสอบว่า user มีอยู่จริงหรือไม่
@@ -78,19 +80,19 @@ const updateProfile = async (req, res) => {
         }
 
         // // ตรวจสอบเบอร์โทรให้ครบ 10 ตำแหน่ง
-        // if (typeof tel !== 'string' || tel.length !== 10) {
+        // if (typeof phone !== 'string' || phone.length !== 10) {
         //     return res.status(400).json({ msg: "กรุณากรอกเบอร์โทรให้ครบ 10 ตำแหน่ง" });
         // }
 
         // ตรวจสอบว่าอีเมลหรือเบอร์โทรนี้ถูกใช้งานแล้วหรือไม่ (ยกเว้นถ้าอีเมลหรือเบอร์เดิม)
         const existingUsername = await userModel.findOne({ username });
-        const existingTel = await userModel.findOne({ tel });
+        const existingPhone = await userModel.findOne({ phone });
 
         if (existingUsername && existingUsername._id.toString() !== user._id.toString()) {
             return res.status(400).json({ msg: "อีเมลนี้ถูกใช้งานแล้ว" });
         }
 
-        if (existingTel && existingTel._id.toString() !== user._id.toString()) {
+        if (existingPhone && existingPhone._id.toString() !== user._id.toString()) {
             return res.status(400).json({ msg: "เบอร์โทรนี้ถูกใช้งานแล้ว" });
         }
 
@@ -109,7 +111,8 @@ const updateProfile = async (req, res) => {
                 lastName: lastName || user.lastName,
                 username: username || user.username,
                 password: hashedPassword,
-                tel: tel || user.tel,
+                phone: phone || user.phone,
+                role: role || user.role,
             },
             { new: true } // Return the updated user
         );

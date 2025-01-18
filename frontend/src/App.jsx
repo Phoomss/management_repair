@@ -18,18 +18,18 @@ import AdminEditCasePage from './pages/admin/Form/AdminEditCasePage';
 import AdminCreateStepTestPage from './pages/admin/Form/AdminCreateStepTestPage';
 import AdminEditStepTestPage from './pages/admin/Form/AdminEditStepTestPage';
 
-import UserCreateCasePage from './pages/user/Form/UserCreateCasePage';
-import UserEditCasePage from './pages/user/Form/UserEditCasePage';
-import UserCaseDetailPage from './pages/user/UserCaseDetail';
-import UserDetailPage from './pages/user/UserDetailPage';
-import UserStepTestPage from './pages/user/UserStepTestPage';
-import UserProfilePage from './pages/user/UserProfilePage';
-import UserLayout from './layouts/UserLayout';
-import UserDashboardPage from './pages/user/UserDashboardPage';
-import UserEditStepTest from './pages/user/Form/UserEditStepTest';
-import UserCreateStepTestPage from './pages/user/Form/UserCreateStepTestPage';
+import EmployeeLayout from './layouts/EmployeeLayout';
 import GenPDF from './components/common/PDF/GenPDF';
 import GenPDFCase from './components/common/PDF/GenPDFCase';
+import EmployeeDashboardPage from './pages/employee/EmployeeDashboardPage';
+import EmployeeDetailPage from './pages/employee/EmployeeDetailPage';
+import EmployeeCaseDetailPage from './pages/employee/EmployeeCaseDetail';
+import EmployeeCreateCasePage from './pages/employee/Form/EmployeeCreateCasePage';
+import EmployeeEditCasePage from './pages/employee/Form/EmployeeEditCasePage';
+import EmployeeStepTestPage from './pages/employee/EmployeeStepTestPage';
+import EmployeeCreateStepTestPage from './pages/employee/Form/EmployeeCreateStepTestPage';
+import EmployeeEditStepTest from './pages/employee/Form/EmployeeEditStepTest';
+import EmployeeProfilePage from './pages/employee/EmployeeProfilePage';
 
 const App = () => {
   return (
@@ -54,16 +54,16 @@ const App = () => {
           <Route path='/admin/user/edit/:id' element={<AdminEditUserPage />} />
           <Route path='/admin/profile' element={<AdminProfilePage />} />
         </Route>
-        <Route element={<UserLayout />}>
-          <Route path='/user/dashboard' element={<UserDashboardPage />} />
-          <Route path='/user/case' element={<UserDetailPage />} />
-          <Route path='/user/case/detail/:id' element={<UserCaseDetailPage />} />
-          <Route path='/user/case/create' element={<UserCreateCasePage />} />
-          <Route path='/user/case/edit/:id' element={<UserEditCasePage />} />
-          <Route path='/user/step-test' element={<UserStepTestPage />} />
-          <Route path='/user/step-test/create' element={<UserCreateStepTestPage />} />
-          <Route path='/user/step-test/edit/:id' element={<UserEditStepTest />} />
-          <Route path='/user/profile' element={<UserProfilePage />} />
+        <Route element={<EmployeeLayout />}>
+          <Route path='/employee/dashboard' element={<EmployeeDashboardPage />} />
+          <Route path='/employee/case' element={<EmployeeDetailPage />} />
+          <Route path='/employee/case/detail/:id' element={<EmployeeCaseDetailPage />} />
+          <Route path='/employee/case/create' element={<EmployeeCreateCasePage />} />
+          <Route path='/employee/case/edit/:id' element={<EmployeeEditCasePage />} />
+          <Route path='/employee/step-test' element={<EmployeeStepTestPage />} />
+          <Route path='/employee/step-test/create' element={<EmployeeCreateStepTestPage />} />
+          <Route path='/employee/step-test/edit/:id' element={<EmployeeEditStepTest />} />
+          <Route path='/employee/profile' element={<EmployeeProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

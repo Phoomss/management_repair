@@ -148,7 +148,7 @@ const EditStepTest = () => {
         text: res.data.msg,
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => navigate("/user/step-test"));
+      }).then(() => navigate("/employee/step-test"));
     } catch (error) {
       Swal.fire({
         title: "Error!",

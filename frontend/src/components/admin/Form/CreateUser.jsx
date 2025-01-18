@@ -11,7 +11,8 @@ const CreateUser = () => {
     username: "",
     password: "",
     confirmPassword: "",
-    phone: ""
+    phone: "",
+    role:""
   });
   const [loading, setLoading] = useState(false);
 
@@ -87,7 +88,7 @@ const CreateUser = () => {
               <option value="Ms.">Ms.</option>
             </select>
           </div>
-          <div className="form-group col-md-5">
+          <div className="form-group col-md-4">
             <input
               type="text"
               className="form-control"
@@ -98,7 +99,7 @@ const CreateUser = () => {
               required
             />
           </div>
-          <div className="form-group col-md-5">
+          <div className="form-group col-md-4">
             <input
               type="text"
               className="form-control"
@@ -108,6 +109,19 @@ const CreateUser = () => {
               onChange={handleChange}
               required
             />
+          </div>
+          <div className="form-group col-md-2">
+            <select
+              className="form-control"
+              name="role"
+              value={registerData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>สถานะ</option>
+              <option value="boss">หัวหน้างาน</option>
+              <option value="employee">พนักงาน</option>
+            </select>
           </div>
         </div>
         <div className="form-row">

@@ -1,7 +1,7 @@
 import React from 'react'
 import CaseDetail from '../../components/CaseDetail'
 
-const UserCaseDetailPage = () => {
+const EmployeeCaseDetailPage = () => {
   return (
     <div className='p-2'>
     <div className="content-header">
@@ -12,7 +12,7 @@ const UserCaseDetailPage = () => {
                 </div>{/* /.col */}
                 <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-right">
-                        <li className="breadcrumb-item"><a href="#">user</a></li>
+                        <li className="breadcrumb-item"><a href="#">employee</a></li>
                         <li className="breadcrumb-item active">case</li>
                         <li className="breadcrumb-item active">detail</li>
                     </ol>
@@ -25,4 +25,4 @@ const UserCaseDetailPage = () => {
   )
 }
 
-export default UserCaseDetailPage
+export default EmployeeCaseDetailPage

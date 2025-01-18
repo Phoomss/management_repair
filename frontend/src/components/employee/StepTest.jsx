@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import stepTestService from "../../service/stepTestService";
-import Swal from "sweetalert2";
-import stepTesstService from "../../service/stepTestService";
 
 const StepTest = () => {
   const [stepTests, setStepTests] = useState([]);
@@ -52,7 +50,7 @@ const StepTest = () => {
   );
 
   // Event handlers
-  const handleCreate = () => navigate("/user/step-test/create");
+  const handleCreate = () => navigate("/employee/step-test/create");
   const handlePreviousPage = () =>
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () =>
@@ -66,7 +64,7 @@ const StepTest = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/user/step-test/edit/${id}`);
+    navigate(`/employee/step-test/edit/${id}`);
   };
 
   

@@ -1,7 +1,7 @@
 import React from 'react'
-import EditStepTest from '../../../components/user/Form/EditStepTest'
+import EditStepTest from '../../../components/employee/Form/EditStepTest'
 
-const UserEditStepTest = () => {
+const EmployeeEditStepTest = () => {
   return (
     <div className='p-2'>
             <div className="content-header">
@@ -12,7 +12,7 @@ const UserEditStepTest = () => {
                         </div>{/* /.col */}
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li className="breadcrumb-item"><a href="#">user</a></li>
+                                <li className="breadcrumb-item"><a href="#">employee</a></li>
                                 <li className="breadcrumb-item active">step test</li>
                                 <li className="breadcrumb-item active">edit</li>
                             </ol>
@@ -25,4 +25,4 @@ const UserEditStepTest = () => {
   )
 }
 
-export default UserEditStepTest
+export default EmployeeEditStepTest

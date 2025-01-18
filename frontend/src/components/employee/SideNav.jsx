@@ -63,27 +63,27 @@ const SideNav = () => {
                     <nav className="mt-2">
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <li className="nav-item">
-                                <NavLink to='/user/dashboard' className="nav-link">
+                                <NavLink to='/employee/dashboard' className="nav-link">
                                     <i className="nav-icon fas fa-tachometer-alt" />
                                     <p>แดชบอร์ด</p>
                                 </NavLink>
                             </li>
                             <li className="nav-header" style={styles.navHeader}>จัดการระบบ</li>
                             <li className="nav-item">
-                                <NavLink to='/user/case' className="nav-link" style={styles.navLink}>
+                                <NavLink to='/employee/case' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon fa fa-table" style={styles.navIcon} />
                                     <p>รายละเอียดจุดท่อรั่ว</p>
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to='/user/step-test' className="nav-link" style={styles.navLink}>
+                                <NavLink to='/employee/step-test' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon fab fa fa-table" style={styles.navIcon} />
                                     <p>Step Test</p>
                                 </NavLink>
                             </li>
                             <li className="nav-header" style={styles.navHeader}>จัดการข้อมูล</li>
                             <li className="nav-item">
-                                <NavLink to='/user/profile' className="nav-link" style={styles.navLink}>
+                                <NavLink to='/employee/profile' className="nav-link" style={styles.navLink}>
                                     <i className="nav-icon 	fas fa-user-circle" style={styles.navIcon} />
                                     <p>ข้อมูลส่วนตัว</p>
                                 </NavLink>

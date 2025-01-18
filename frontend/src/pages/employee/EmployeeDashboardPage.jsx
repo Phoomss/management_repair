@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import Dashboard from '../../components/user/Dashboard';
+import Dashboard from '../../components/employee/Dashboard';
 import userService from '../../service/userService';
 import { useNavigate } from 'react-router-dom';
 
-const UserDashboardPage = () => {
+const EmployeeDashboardPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const UserDashboardPage = () => {
                         </div>{/* /.col */}
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li className="breadcrumb-item"><a href="#">user</a></li>
+                                <li className="breadcrumb-item"><a href="#">employee</a></li>
                                 <li className="breadcrumb-item active">dashboard</li>
                             </ol>
                         </div>{/* /.col */}
@@ -48,4 +48,4 @@ const UserDashboardPage = () => {
     );
 }
 
-export default UserDashboardPage
+export default EmployeeDashboardPage

@@ -12,6 +12,7 @@ const EditUser = () => {
     const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
     const [phone, setPhone] = useState("");
+    const [role, setRole] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState('');
@@ -22,7 +23,7 @@ const EditUser = () => {
             setError('User ID is not provided');
             return;
         }
-    
+
         try {
             const res = await userService.userById(id);
             if (res.status === 200) {
@@ -32,13 +33,14 @@ const EditUser = () => {
                 setLastName(user.lastName || "");
                 setUsername(user.username || "");
                 setPhone(user.phone || "");
+                setRole(user.role || "");
             } else {
                 setError('Error fetching user data');
             }
         } catch (error) {
             setError('Error fetching user data');
         }
-    };    
+    };
 
     useEffect(() => {
         fetchuser();
@@ -117,7 +119,7 @@ const EditUser = () => {
                             <option value="Ms.">Ms.</option>
                         </select>
                     </div>
-                    <div className="form-group col-md-5">
+                    <div className="form-group col-md-4">
                         <input
                             type="text"
                             className="form-control"
@@ -128,7 +130,7 @@ const EditUser = () => {
                             required
                         />
                     </div>
-                    <div className="form-group col-md-5">
+                    <div className="form-group col-md-4">
                         <input
                             type="text"
                             className="form-control"
@@ -138,6 +140,18 @@ const EditUser = () => {
                             onChange={(e) => setLastName(e.target.value)}
                             required
                         />
+                    </div>
+                    <div className="form-group col-md-2">
+                        <select
+                            className="form-control"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            required
+                        >
+                            <option value="" disabled>สถานะ</option>
+                            <option value="boss">หัวหน้างาน</option>
+                            <option value="employee">พนักงาน</option>
+                        </select>
                     </div>
                 </div>
                 <div className="form-row">
@@ -189,7 +203,7 @@ const EditUser = () => {
                 <div className="form-row">
                     <div className="form-group col-md-6">
                         <button type="button" className="btn btn-secondary mr-1" onClick={handleCancel} disabled={loading}>
-                           ยกเลิก
+                            ยกเลิก
                         </button>
                         <button type="submit" className="btn btn-primary" disabled={loading}>
                             {loading ? 'กำลังแก้ไขข้อมูล...' : 'แก้ไขข้อมูล'}

@@ -1,7 +1,7 @@
 import React from 'react'
-import CreateStepTest from '../../../components/user/Form/CreateStepTest'
+import CreateStepTest from '../../../components/employee/Form/CreateStepTest'
 
-const UserCreateStepTestPage = () => {
+const EmployeeCreateStepTestPage = () => {
   return (
     <div className="p-2">
     <div className="content-header">
@@ -14,7 +14,7 @@ const UserCreateStepTestPage = () => {
           <div className="col-sm-6">
             <ol className="breadcrumb float-sm-right">
               <li className="breadcrumb-item">
-                <a href="#">user</a>
+                <a href="#">employee</a>
               </li>
               <li className="breadcrumb-item active">step test</li>
               <li className="breadcrumb-item active">create</li>
@@ -31,4 +31,4 @@ const UserCreateStepTestPage = () => {
   )
 }
 
-export default UserCreateStepTestPage
+export default EmployeeCreateStepTestPage

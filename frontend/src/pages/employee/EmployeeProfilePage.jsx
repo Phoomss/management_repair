@@ -1,7 +1,7 @@
 import React from 'react'
 import Profile from '../../components/Profile'
 
-const UserProfilePage = () => {
+const EmployeeProfilePage = () => {
   return (
     <div className='p-2'>
       <div className="content-header">
@@ -12,7 +12,7 @@ const UserProfilePage = () => {
             </div>{/* /.col */}
             <div className="col-sm-6">
               <ol className="breadcrumb float-sm-right">
-                <li className="breadcrumb-item"><a href="#">user</a></li>
+                <li className="breadcrumb-item"><a href="#">employee</a></li>
                 <li className="breadcrumb-item active">profile</li>
               </ol>
             </div>{/* /.col */}
@@ -24,4 +24,4 @@ const UserProfilePage = () => {
   )
 }
 
-export default UserProfilePage
+export default EmployeeProfilePage

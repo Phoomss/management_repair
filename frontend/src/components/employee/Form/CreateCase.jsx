@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import pipeService from "./../../../service/pipeService";
 import caseService from "./../../../service/caseService";
+import userService from "../../../service/userService";
 
-const UpdateCase = () => {
-  const { id } = useParams(); // Get the case ID from the URL
+const CreateCase = () => {
   const [formData, setFormData] = useState({
     date: "",
     numberWork: "",
@@ -22,52 +22,39 @@ const UpdateCase = () => {
     dma: "",
     inspector: "",
     images: [],
+    status: "รอการตรวจสอบ",
   });
+  const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
   const [pipes, setPipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: 13.7367, lng: 100.5232 }); // Default to Bangkok
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   const navigate = useNavigate();
 
+  const sizePipeOption = [20, 25, 40, 50, 110, 150, 200, 225, 300]
+
   useEffect(() => {
-    // Fetch existing case data by id
-    const fetchCaseData = async () => {
-      try {
-        const res = await caseService.caseById(id);
-        const caseData = res.data.data;
-        setFormData({
-          ...formData,
-          date: new Date(caseData.date).toISOString().split("T")[0],
-          numberWork: caseData.numberWork,
-          houseNumber: caseData.houseNumber,
-          villageNo: caseData.villageNo,
-          subdistrict: caseData.subdistrict,
-          district: caseData.district,
-          province: caseData.province,
-          latitude: caseData.latitude,
-          longitude: caseData.longitude,
-          pipe: caseData.pipe,
-          size: caseData.size,
-          dma: caseData.dma,
-          inspector: caseData.inspector,
-        });
-        console.log(res.data.data);
-        setMapCenter({
-          lat: parseFloat(caseData.latitude),
-          lng: parseFloat(caseData.longitude),
-        });
-      } catch (err) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const currentPos = { lat: latitude, lng: longitude };
+        setMapCenter(currentPos);
+        setCurrentLocation(currentPos);
+      },
+      (error) => {
+        console.error("Error getting location:", error);
         Swal.fire({
           title: "Error!",
-          text: err.response?.data?.msg || "Failed to fetch case data.",
-          icon: "error",
-          confirmButtonText: "Retry",
+          text: "ไม่สามารถระบุตำแหน่งปัจจุบันได้ แสดงตำแหน่งเริ่มต้นที่กรุงเทพฯ",
+          icon: "warning",
+          confirmButtonText: "ตกลง",
         });
       }
-    };
-    fetchCaseData();
-  }, [id]);
+    );
+  }, []);
 
   useEffect(() => {
     const fetchPipes = async () => {
@@ -83,29 +70,31 @@ const UpdateCase = () => {
         });
       }
     };
+
+    const fetchUserInfo = async () => {
+      try {
+        const res = await userService.userInfo();
+        setUserInfo(res.data.data);
+        setFormData((prevData) => ({
+          ...prevData,
+          inspector: res.data.data._id, // เก็บแค่ _id
+        }));
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.res?.data?.msg || "An unexpected error occurred.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    };
     fetchPipes();
+    fetchUserInfo();
   }, []);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    // เช็คถ้าเป็นฟิลด์วันที่
-    if (name === "date") {
-      // ตรวจสอบว่า value เป็นวันที่ที่ถูกต้อง
-      const formattedDate = value ? new Date(value).toISOString().split("T")[0] : "";
-
-      // อัพเดต state
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: formattedDate,
-      }));
-    } else {
-      // อัพเดตค่าอื่น ๆ
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
@@ -119,26 +108,23 @@ const UpdateCase = () => {
 
     if (validFiles.length !== files.length) {
       Swal.fire({
-        title: "Invalid File!",
-        text: "Ensure all files are JPEG/PNG and below 5MB.",
-        icon: "error",
-        confirmButtonText: "OK",
+        title: "ไฟล์ไม่ถูกต้อง!", // ชื่อในกล่องแจ้งเตือน
+        text: "กรุณาเลือกไฟล์ที่เป็น JPEG/PNG และมีขนาดไม่เกิน 5MB.", // ข้อความแจ้งเตือน
+        icon: "error", // ไอคอนการแจ้งเตือน
+        confirmButtonText: "ตกลง", // ข้อความในปุ่มตกลง
       });
       return;
     }
 
-    setFormData({
-      ...formData,
-      images: validFiles,
-    });
+    setImages(validFiles);
     setPreviewImages(validFiles.map((file) => URL.createObjectURL(file)));
   };
 
   const removePreviewImage = (index) => {
     const updatedPreviews = previewImages.filter((_, i) => i !== index);
-    const updatedImages = formData.images.filter((_, i) => i !== index);
+    const updatedImages = images.filter((_, i) => i !== index);
     setPreviewImages(updatedPreviews);
-    setFormData({ ...formData, images: updatedImages });
+    setImages(updatedImages);
   };
 
   const handleSubmit = async (e) => {
@@ -157,27 +143,19 @@ const UpdateCase = () => {
 
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
-      if (key !== 'inspector' && key !== 'pipe') { // Don't append inspector here, it's done separately
-        formDataToSend.append(key, formData[key]);
-      }
+      formDataToSend.append(key, formData[key]);
     });
 
-    // Add the inspector ID separately
-    formDataToSend.append("pipe", formData.pipe._id);
-    formDataToSend.append("inspector", formData.inspector._id);
-
-    // Add the images to the formData
-    formData.images.forEach((file) => formDataToSend.append("images", file));
+    images.forEach((file) => formDataToSend.append("images", file));
 
     try {
-      const response = await caseService.updateCase(id, formDataToSend);
-      console.log(response);
+      const response = await caseService.createCase(formDataToSend);
       Swal.fire({
         title: "Success!",
         text: response.data.msg,
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => navigate("/user/case"));
+      }).then(() => navigate("/employee/case"));
     } catch (err) {
       Swal.fire({
         title: "Error!",
@@ -189,8 +167,6 @@ const UpdateCase = () => {
       setLoading(false);
     }
   };
-
-
   return (
     <div className="container py-4">
       <form onSubmit={handleSubmit} encType="multipart/form-data" noValidate>
@@ -198,27 +174,28 @@ const UpdateCase = () => {
           <div className="card-header">ข้อมูลเบื้องต้น</div>
           <div className="card-body">
             <div className="row g-3">
-              {/* Inspector Name Field */}
-              <div className="col-12">
+              {/* Inspector Information */}
+              <div className="col-md-12">
                 <label htmlFor="inspector" className="form-label">
                   ชื่อผู้ตรวจสอบ
                 </label>
                 <input
+                  type="hidden"
+                  name="inspector"
+                  value={formData.inspector._id}
+                />
+                <input
                   type="text"
                   className="form-control"
-                  id="inspector"
                   name="inspector"
-                  value={`${formData.inspector.title || ""}${formData.inspector.firstName
-                    } ${formData.inspector.lastName}`}
-                  onChange={(e) =>
-                    setFormData({ ...formData, inspector: e.target.value })
-                  }
-                  required
+                  placeholder="ชื่อผู้ตรวจสอบ"
+                  value={`${userInfo.title || ""} ${userInfo.firstName} ${userInfo.lastName
+                    }`}
                   disabled
                 />
               </div>
 
-              {/* Date and Work Number Fields */}
+              {/* Row 1: Date and Work Number */}
               <div className="col-md-6">
                 <label htmlFor="date" className="form-label">
                   วันที่ <i className="bi bi-calendar"></i>
@@ -233,6 +210,7 @@ const UpdateCase = () => {
                   required
                 />
               </div>
+
               <div className="col-md-6">
                 <label htmlFor="numberWork" className="form-label">
                   เลขที่งาน <i className="bi bi-file-earmark"></i>
@@ -248,7 +226,7 @@ const UpdateCase = () => {
                 />
               </div>
 
-              {/* Address Fields */}
+              {/* Row 2: Address Fields */}
               <div className="col-md-6">
                 <label htmlFor="houseNumber" className="form-label">
                   บ้านเลขที่
@@ -263,6 +241,7 @@ const UpdateCase = () => {
                   required
                 />
               </div>
+
               <div className="col-md-6">
                 <label htmlFor="villageNo" className="form-label">
                   หมู่ที่
@@ -277,6 +256,7 @@ const UpdateCase = () => {
                   required
                 />
               </div>
+
               <div className="col-md-4">
                 <label htmlFor="subdistrict" className="form-label">
                   ตำบล
@@ -291,6 +271,7 @@ const UpdateCase = () => {
                   required
                 />
               </div>
+
               <div className="col-md-4">
                 <label htmlFor="district" className="form-label">
                   อำเภอ
@@ -305,6 +286,7 @@ const UpdateCase = () => {
                   required
                 />
               </div>
+
               <div className="col-md-4">
                 <label htmlFor="province" className="form-label">
                   จังหวัด
@@ -324,9 +306,10 @@ const UpdateCase = () => {
         </div>
 
         <div className="card mb-4">
-          <div className="card-header">ข้อมูลเบื้องต้น</div>
+          <div className="card-header">รายละเอียดจุดท่อรั่ว</div>
           <div className="card-body">
             <div className="row g-3">
+              {/* Row 3: Pipe and Size */}
               <div className="col-md-4">
                 <label htmlFor="pipe" className="form-label">
                   ท่อ
@@ -335,7 +318,7 @@ const UpdateCase = () => {
                   className="form-control"
                   id="pipe"
                   name="pipe"
-                  value={formData.pipe?._id || ""}  
+                  value={formData.pipe}
                   onChange={handleChange}
                   required
                 >
@@ -353,7 +336,7 @@ const UpdateCase = () => {
                 <label htmlFor="size" className="form-label">
                   ขนาด
                 </label>
-                <input
+                {/* <input
                   type="text"
                   className="form-control"
                   id="size"
@@ -361,7 +344,22 @@ const UpdateCase = () => {
                   value={formData.size}
                   onChange={handleChange}
                   required
-                />
+                /> */}
+                <select
+                  className="form-control"
+                  id="size"
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select</option>
+                  {sizePipeOption.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="col-md-4">
                 <label htmlFor="dma" className="form-label">
@@ -386,10 +384,10 @@ const UpdateCase = () => {
                 </select>
               </div>
 
-              {/* Latitude and Longitude */}
+              {/* Row 4: Latitude and Longitude */}
               <div className="col-md-6">
                 <label htmlFor="latitude" className="form-label">
-                  ละติจูด <i className="bi bi-geo-alt"></i>
+                  ละติจูด <i className="bi bi-geo"></i>
                 </label>
                 <input
                   type="text"
@@ -398,7 +396,7 @@ const UpdateCase = () => {
                   name="latitude"
                   value={formData.latitude}
                   onChange={handleChange}
-                  disabled
+                  required
                 />
               </div>
               <div className="col-md-6">
@@ -412,7 +410,7 @@ const UpdateCase = () => {
                   name="longitude"
                   value={formData.longitude}
                   onChange={handleChange}
-                  disabled
+                  required
                 />
               </div>
 
@@ -422,7 +420,7 @@ const UpdateCase = () => {
                     id="map"
                     mapContainerStyle={{ width: "100%", height: "400px" }}
                     center={mapCenter}
-                    zoom={12}
+                    zoom={15}
                     onClick={(e) => {
                       setFormData({
                         ...formData,
@@ -431,12 +429,28 @@ const UpdateCase = () => {
                       });
                     }}
                   >
+                    {/* Selected Location Marker */}
                     {formData.latitude && formData.longitude && (
                       <Marker
                         position={{
                           lat: parseFloat(formData.latitude),
                           lng: parseFloat(formData.longitude),
                         }}
+                        icon={{
+                          url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                        }}
+                        title="ตำแหน่งที่เลือก"
+                      />
+                    )}
+
+                    {/* Current Location Marker */}
+                    {currentLocation && (
+                      <Marker
+                        position={currentLocation}
+                        icon={{
+                          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                        }}
+                        title="ตำแหน่งปัจจุบัน"
                       />
                     )}
                   </GoogleMap>
@@ -446,26 +460,10 @@ const UpdateCase = () => {
           </div>
         </div>
 
-        <div className="card mb-4">
+        {/* File Upload */}
+        <div className="card mb-12">
           <div className="card-header">Upload Images</div>
           <div className="card-body">
-            {/* แสดงรูปเก่าที่มีอยู่แล้ว */}
-            {formData.images.length > 0 && (
-              <div className="row mt-3">
-                {formData.images.map((image, index) => (
-                  <div key={index} className="col-md-3 mb-3 text-center">
-                    {/* แสดงรูปเก่า */}
-                    <img
-                      src={`http://localhost:8080${image}`}
-                      alt="Old Image"
-                      className="img-thumbnail"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* แสดงรูปใหม่ที่ผู้ใช้เลือก */}
             <input
               type="file"
               multiple
@@ -475,11 +473,10 @@ const UpdateCase = () => {
             <div className="row mt-3">
               {previewImages.map((url, index) => (
                 <div key={index} className="col-md-3 mb-3 text-center">
-                  {/* แสดงรูปที่ถูกเลือกใหม่ */}
                   <img src={url} alt="Preview" className="img-thumbnail" />
                   <button
                     type="button"
-                    className="btn btn-danger btn-sm mt-2"
+                    className="btn btn-sm btn-danger mt-2"
                     onClick={() => removePreviewImage(index)}
                   >
                     Remove
@@ -489,12 +486,13 @@ const UpdateCase = () => {
             </div>
           </div>
         </div>
+
         <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? "กำลังอัพเดท..." : "อัพเดทข้อมูล"}
+          {loading ? "กำลังบันทึก..." : "บันทึก"}
         </button>
       </form>
     </div>
   );
 };
 
-export default UpdateCase;
+export default CreateCase;

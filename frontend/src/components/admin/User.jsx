@@ -64,21 +64,22 @@ const User = () => {
 
     const filterUser = (searchTerm) => {
         let filtered = User;
-
+    
         // Apply search filter
         if (searchTerm.trim() !== '') {
             filtered = filtered.filter(user =>
                 user.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.tel.includes(searchTerm)
+                user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.phone.includes(searchTerm) ||
+                (user.role && user.role.toLowerCase().includes(searchTerm.toLowerCase())) // Include role in the search
             );
         }
-
+    
         setFilteredUser(filtered);
-        setCurrentPage(1); // Reset to first page when filters change
-    };
+        setCurrentPage(1); // Reset to the first page when filters change
+    };    
 
     // Pagination handlers
     const totalPages = Math.ceil(filteredUser.length / itemsPerPage);
@@ -139,7 +140,21 @@ const User = () => {
                                     <td>{user.title} {user.firstName} {user.lastName}</td>
                                     <td>{user.username}</td>
                                     <td>{user.phone}</td>
-                                    <td><p className='bg-success border'>{user.role}</p></td>
+                                    {
+                                        user.role === 'employee' ? (
+                                            <td>
+                                                <p className='bg-info border'>พนักงาน</p>
+                                            </td>
+                                        ) : user.role === 'boss' ? (
+                                            <td>
+                                                <p className='bg-success border'>หัวหน้างาน</p>
+                                            </td>
+                                        ) : (
+                                            <td>
+                                                <p className='bg-secondary border'>แอดมิน</p>
+                                            </td>
+                                        )
+                                    }
                                     <td>
                                         <button className='btn btn-warning mr-1 mt-1' onClick={() => handleEdit(user._id)}>แก้ไข</button>
                                         <button className='btn btn-danger mt-1' onClick={() => handleDelete(user._id)}>ลบ</button>

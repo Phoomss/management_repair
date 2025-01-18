@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const roleStatus = ['admin', 'user']
+const roleStatus = ['admin', 'employee','boss']
 const title = ['นาย.', 'นาง.', 'น.ส.', 'Mr.', 'Ms.']
 
 const userSchema = new mongoose.Schema({

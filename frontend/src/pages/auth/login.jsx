@@ -17,12 +17,12 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+    
         try {
             const res = await authService.login(loginData);
             const userRole = res.data.data.role;
             localStorage.setItem("token", res.data.data.token);
-
+    
             Swal.fire({
                 icon: 'success',
                 title: 'เข้าสู่ระบบ',
@@ -31,8 +31,26 @@ const Login = () => {
                 timerProgressBar: true,
                 showConfirmButton: false,
             });
-
-            navigate(userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard');
+    
+            // Navigate based on role using switch-case
+            switch (userRole) {
+                case 'admin':
+                    navigate('/admin/dashboard');
+                    break;
+                case 'employee':
+                    navigate('/employee/dashboard');
+                    break;
+                case 'boss':
+                    navigate('/boss/dashboard');
+                    break;
+                default:
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: 'ไม่สามารถระบุบทบาทผู้ใช้ได้',
+                        showConfirmButton: true,
+                    });
+            }
         } catch (error) {
             Swal.fire({
                 position: "center",
@@ -46,6 +64,7 @@ const Login = () => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div

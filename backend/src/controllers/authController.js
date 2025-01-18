@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const register = async (req, res) => {
     try {
-        const { title, firstName, lastName, username, password, phone } = req.body;
+        const { title, firstName, lastName, username, password, phone,role } = req.body;
 
         // ตรวจสอบเบอร์โทรให้ครบ 10 ตำแหน่ง
         if (typeof phone !== 'string' || phone.length !== 10) {
@@ -34,7 +34,7 @@ const register = async (req, res) => {
             username,
             password: hashedPassword,
             phone,
-            role: "user"
+            role
         });
 
         // บันทึกผู้ใช้ใหม่ในฐานข้อมูล
@@ -71,7 +71,7 @@ const login = async (req, res) => {
 
         const jwtToken = jwt.sign({
             _id: user._id,
-            uesrname: user.uesrname,
+            username: user.username,
             role: user.role
         },
             process.env.JWT_SECRET,
@@ -83,7 +83,7 @@ const login = async (req, res) => {
             msg: "Login successfully",
             data: {
                 full_name: `${user.title} ${user.firstName} ${user.lastName}`,
-                uesrname: user.uesrname,
+                username: user.username,
                 tel: user.tel,
                 role: user.role,
                 token: jwtToken

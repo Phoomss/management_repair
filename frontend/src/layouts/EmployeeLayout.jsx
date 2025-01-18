@@ -1,10 +1,10 @@
 import React from 'react'
 import Header from '../components/Header'
-import SideNav from '../components/user/SideNav'
+import SideNav from '../components/employee/SideNav'
 import { Outlet } from 'react-router-dom'
 import Footer from '../components/Footer'
 
-const UserLayout = () => {
+const EmployeeLayout = () => {
     return (
         <div className='wrapper'>
             <Header />
@@ -17,4 +17,4 @@ const UserLayout = () => {
     )
 }
 
-export default UserLayout
+export default EmployeeLayout
