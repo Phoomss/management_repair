@@ -111,6 +111,7 @@ const GenPDFCase = () => {
             try {
                 const response = await caseService.caseById(id);
                 setCases(response.data.data);
+                console.log(response.data.data)
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -124,10 +125,9 @@ const GenPDFCase = () => {
                 <View style={styles.header}>
                     <Image src={logo} style={styles.logo} />
                     <Text style={styles.headerText}>
-                        งานจ้างสำรวจพาน้ำสุญเสียงเขิงรุก (ALC)
+                        งานจ้างสำรวจหาน้ำสุญเสียงเชิงรุก (ALC)
                     </Text>
                 </View>
-
 
                 {cases ? (
                     <>
@@ -139,6 +139,9 @@ const GenPDFCase = () => {
                                 พื้นที่ DMA {cases.dma} บ้านเลขที่ {cases.houseNumber}{" "}
                                 หมู่ {cases.villageNo} ตำบล {cases.subdistrict} อำเภอ{" "}
                                 {cases.district} จังหวัด {cases.province}
+                            </Text>
+                            <Text style={styles.text}>
+                                เจ้าหน้าที่รับเรื่อง: {cases.inspector?.title}{cases.inspector?.firstName} {cases.inspector?.lastName}
                             </Text>
                         </View>
                         <View style={styles.imageContainer}>
