@@ -41,7 +41,7 @@ const CreateUser = () => {
     }
 
     try {
-      await authService.register(registerData); // Assuming authService has a register method
+      await authService.register(registerData);
       Swal.fire({
         position: "center",
         icon: "success",
@@ -55,13 +55,13 @@ const CreateUser = () => {
         position: "center",
         icon: "error",
         title: "เกิดข้อผิดพลาด!",
-        text: "การลงทะเบียนล้มเหลว",
+        text: error.response?.data?.msg || "การลงทะเบียนล้มเหลว",
         showConfirmButton: false,
         timer: 1000
       });
     } finally {
       setLoading(false);
-    }
+    }    
   };
 
   const handleCancel = () => {

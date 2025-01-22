@@ -70,6 +70,7 @@ const EditUser = () => {
                 lastName,
                 username,
                 phone,
+                role,
                 ...(password && { password })  // Only include password if it's provided
             };
 
@@ -83,7 +84,7 @@ const EditUser = () => {
                     timerProgressBar: true,
                     showConfirmButton: false,
                 }).then(() => {
-                    navigate('/admin/user');
+                   navigate('/admin/user');
                 });
             } else {
                 setError('Error updating user');
