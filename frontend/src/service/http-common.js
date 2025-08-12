@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const defaultOptions = {
-    baseURL: "http://localhost:8080/",
+    baseURL: "https://management-repair-backend.onrender.com/",
     headers: {
         "Content-Type": "application/json",
     },
